@@ -25,10 +25,7 @@ public class NavigationActivity extends MvpAppCompatActivity implements Navigati
         setContentView(R.layout.activity_navigation);
         ButterKnife.bind(this);
 
-        bottomNav.setOnNavigationItemSelectedListener(item -> {
-            navigationPresenter.onNavigate(item.getItemId());
-            return true;
-        });
+        bottomNav.setOnNavigationItemSelectedListener(item -> navigationPresenter.onNavigate(item.getItemId()));
     }
 
     @Override

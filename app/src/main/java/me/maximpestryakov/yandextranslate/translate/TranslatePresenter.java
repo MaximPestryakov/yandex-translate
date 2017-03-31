@@ -13,7 +13,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     private YandexTranslateApi api;
 
-    public TranslatePresenter() {
+    TranslatePresenter() {
         api = ApiManager.getApi();
     }
 
@@ -21,6 +21,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         api.translate(textToTranslate, "en-ru", "plain").enqueue(new Callback<>(
                 (call, response) -> {
                     Translation translation = response.body();
+                    translation.setOriginal(textToTranslate);
                     getViewState().showTranslation(translation.getText().get(0));
                 },
                 (call, t) -> {
