@@ -1,4 +1,4 @@
-package me.maximpestryakov.yandextranslate.main;
+package me.maximpestryakov.yandextranslate.translate;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -9,11 +9,11 @@ import me.maximpestryakov.yandextranslate.model.Translation;
 import me.maximpestryakov.yandextranslate.util.Callback;
 
 @InjectViewState
-public class MainPresenter extends MvpPresenter<MainView> {
+public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     private YandexTranslateApi api;
 
-    public MainPresenter() {
+    public TranslatePresenter() {
         api = ApiManager.getApi();
     }
 
