@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.maximpestryakov.yandextranslate.R;
+import me.maximpestryakov.yandextranslate.model.Translation;
 
 
 public class TranslateFragment extends MvpAppCompatFragment implements TranslateView {
@@ -30,6 +32,9 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     @BindView(R.id.translatedText)
     TextView translatedText;
+
+    @BindView(R.id.favorite)
+    CheckBox favorite;
 
     private String textToTranslateValue;
 
@@ -76,7 +81,11 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     }
 
     @Override
-    public void showTranslation(String translation) {
-        translatedText.setText(translation);
+    public void showTranslation(Translation translation) {
+        translatedText.setText(translation.getText().get(0));
+        favorite.setChecked(translation.isFavorite());
+        favorite.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            translation.setFavorite(isChecked);
+        });
     }
 }

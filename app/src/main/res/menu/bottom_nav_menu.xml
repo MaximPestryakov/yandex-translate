@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navTranslate"
         android:enabled="true"
         android:icon="@drawable/ic_translate_white_24dp"
-        android:title="Перевод"
-        app:showAsAction="ifRoom" />
+        android:title="Перевод" />
 
     <item
         android:id="@+id/navFavorite"
         android:enabled="true"
         android:icon="@drawable/ic_favorite_white_24dp"
-        android:title="Избранное"
-        app:showAsAction="ifRoom" />
+        android:title="Избранное" />
 
     <item
         android:id="@+id/navHistory"
@@ -25,6 +22,5 @@
         android:id="@+id/navSettings"
         android:enabled="true"
         android:icon="@drawable/ic_settings_white_24dp"
-        android:title="Настройки"
-        app:showAsAction="ifRoom" />
+        android:title="Настройки" />
 </menu>

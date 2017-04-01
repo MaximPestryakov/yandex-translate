@@ -1,4 +1,4 @@
-package me.maximpestryakov.yandextranslate.favorites;
+package me.maximpestryakov.yandextranslate.translations;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.util.List;
 
@@ -17,15 +18,32 @@ import butterknife.ButterKnife;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
 
-public class FavoritesFragment extends MvpAppCompatFragment implements FavoritesView {
+public class TranslationsFragment extends MvpAppCompatFragment implements TranslationsView {
+
+    @InjectPresenter
+    TranslationsPresenter translationsPresenter;
 
     @BindView(R.id.favoriteList)
     RecyclerView favoriteList;
 
-    FavoritesAdapter favoritesAdapter;
+    private TranslationsAdapter favoritesAdapter;
+    private Boolean onlyFavorites;
 
-    public static FavoritesFragment newInstance() {
-        return new FavoritesFragment();
+    public static TranslationsFragment newInstance(boolean onlyFavorites) {
+        Bundle args = new Bundle();
+        args.putBoolean("only_favorites", onlyFavorites);
+        TranslationsFragment fragment = new TranslationsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            onlyFavorites = args.getBoolean("only_favorites");
+        }
     }
 
     @Nullable
@@ -39,7 +57,7 @@ public class FavoritesFragment extends MvpAppCompatFragment implements Favorites
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        favoritesAdapter = new FavoritesAdapter(v -> {
+        favoritesAdapter = new TranslationsAdapter(v -> {
 
         });
 

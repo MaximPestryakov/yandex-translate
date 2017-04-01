@@ -6,5 +6,5 @@ import com.arellomobile.mvp.MvpView;
 
 public interface NavigationView extends MvpView {
 
-    void showFragment(Fragment fragment);
+    void showFragment(Fragment fragment, String tag);
 }

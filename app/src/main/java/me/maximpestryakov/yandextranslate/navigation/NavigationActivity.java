@@ -29,10 +29,23 @@ public class NavigationActivity extends MvpAppCompatActivity implements Navigati
     }
 
     @Override
-    public void showFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.mainFragment, fragment)
-                .commit();
+    public void onBackPressed() {
+    }
+
+    @Override
+    public void showFragment(Fragment fragment, String tag) {
+        Fragment oldFragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (oldFragment == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.mainFragment, fragment, tag)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.mainFragment, oldFragment)
+                    .commit();
+        }
     }
 }

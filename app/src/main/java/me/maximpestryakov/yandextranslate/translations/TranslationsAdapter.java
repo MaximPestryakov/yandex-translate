@@ -1,4 +1,4 @@
-package me.maximpestryakov.yandextranslate.favorites;
+package me.maximpestryakov.yandextranslate.translations;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,12 +15,12 @@ import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
 
 
-class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.FavoriteViewHolder> {
+class TranslationsAdapter extends RecyclerView.Adapter<TranslationsAdapter.FavoriteViewHolder> {
 
     private OnClickListener onClickListener;
     private List<Translation> favorites;
 
-    FavoritesAdapter(OnClickListener onClickListener) {
+    TranslationsAdapter(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
 

@@ -22,7 +22,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                 (call, response) -> {
                     Translation translation = response.body();
                     translation.setOriginal(textToTranslate);
-                    getViewState().showTranslation(translation.getText().get(0));
+                    getViewState().showTranslation(translation);
                 },
                 (call, t) -> {
                     // show error

@@ -14,6 +14,8 @@ public class Translation {
 
     private String original;
 
+    private boolean favorite;
+
     @SerializedName("text")
     private List<String> text;
 
@@ -35,5 +37,13 @@ public class Translation {
 
     public List<String> getText() {
         return text;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }
