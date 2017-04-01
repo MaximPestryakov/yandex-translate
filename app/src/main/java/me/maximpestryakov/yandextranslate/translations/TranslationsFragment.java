@@ -26,7 +26,7 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
     @BindView(R.id.favoriteList)
     RecyclerView favoriteList;
 
-    private TranslationsAdapter favoritesAdapter;
+    private TranslationsAdapter translationsAdapter;
     private Boolean onlyFavorites;
 
     public static TranslationsFragment newInstance(boolean onlyFavorites) {
@@ -57,17 +57,17 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        favoritesAdapter = new TranslationsAdapter(v -> {
+        translationsAdapter = new TranslationsAdapter(onlyFavorites, v -> {
 
         });
 
         favoriteList.setHasFixedSize(true);
         favoriteList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        favoriteList.setAdapter(favoritesAdapter);
+        favoriteList.setAdapter(translationsAdapter);
     }
 
     @Override
     public void showFavorites(List<Translation> favorites) {
-        favoritesAdapter.setFavorites(favorites);
+        // translationsAdapter.setTranslations(favorites);
     }
 }

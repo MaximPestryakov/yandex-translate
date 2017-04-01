@@ -4,20 +4,23 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Translation {
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import me.maximpestryakov.yandextranslate.util.RealmString;
 
-    @SerializedName("code")
-    private int code;
+public class Translation extends RealmObject {
 
     @SerializedName("lang")
     private String lang;
 
+    @SerializedName("text")
+    private RealmList<RealmString> text;
+
+    @PrimaryKey
     private String original;
 
     private boolean favorite;
-
-    @SerializedName("text")
-    private List<String> text;
 
     public String getOriginal() {
         return original;
@@ -27,15 +30,11 @@ public class Translation {
         this.original = original;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public String getLang() {
         return lang;
     }
 
-    public List<String> getText() {
+    public List<RealmString> getText() {
         return text;
     }
 

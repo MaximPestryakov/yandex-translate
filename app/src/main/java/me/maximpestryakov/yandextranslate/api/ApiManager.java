@@ -1,5 +1,9 @@
 package me.maximpestryakov.yandextranslate.api;
 
+import com.google.gson.GsonBuilder;
+
+import me.maximpestryakov.yandextranslate.util.RealmString;
+import me.maximpestryakov.yandextranslate.util.RealmStringDeserializer;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -34,7 +38,9 @@ public class ApiManager {
 
         api = new Retrofit.Builder()
                 .baseUrl("https://translate.yandex.net/api/v1.5/tr.json/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
+                        .registerTypeAdapter(RealmString.class, new RealmStringDeserializer())
+                        .create()))
                 .client(client)
                 .build()
                 .create(YandexTranslateApi.class);

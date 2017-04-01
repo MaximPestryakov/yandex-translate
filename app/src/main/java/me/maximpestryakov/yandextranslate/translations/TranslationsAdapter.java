@@ -11,17 +11,21 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
 
 
 class TranslationsAdapter extends RecyclerView.Adapter<TranslationsAdapter.FavoriteViewHolder> {
 
+    private boolean onlyFavorites;
     private OnClickListener onClickListener;
-    private List<Translation> favorites;
+    private List<Translation> translations;
 
-    TranslationsAdapter(OnClickListener onClickListener) {
+    TranslationsAdapter(boolean onlyFavorites, OnClickListener onClickListener) {
+        this.onlyFavorites = onlyFavorites;
         this.onClickListener = onClickListener;
+        updateData();
     }
 
     @Override
@@ -32,19 +36,22 @@ class TranslationsAdapter extends RecyclerView.Adapter<TranslationsAdapter.Favor
 
     @Override
     public void onBindViewHolder(FavoriteViewHolder holder, int position) {
-        holder.bind(onClickListener, favorites.get(position));
+        holder.bind(onClickListener, translations.get(position));
     }
 
     @Override
     public int getItemCount() {
-        if (favorites == null) {
+        if (translations == null) {
             return 0;
         }
-        return favorites.size();
+        return translations.size();
     }
 
-    void setFavorites(List<Translation> favorites) {
-        this.favorites = favorites;
+    private void updateData() {
+        Realm.getDefaultInstance().executeTransaction(realm ->
+                translations = realm.where(Translation.class)
+                        .equalTo("favorite", onlyFavorites)
+                        .findAll());
         notifyDataSetChanged();
     }
 
@@ -64,7 +71,7 @@ class TranslationsAdapter extends RecyclerView.Adapter<TranslationsAdapter.Favor
         void bind(OnClickListener onClickListener, Translation translation) {
             itemView.setOnClickListener(onClickListener);
             itemOriginal.setText(translation.getOriginal());
-            itemTranslation.setText(translation.getText().get(0));
+            itemTranslation.setText(translation.getText().get(0).getValue());
         }
     }
 }

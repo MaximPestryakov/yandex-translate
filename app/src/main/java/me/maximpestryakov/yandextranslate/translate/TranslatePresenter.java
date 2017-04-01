@@ -3,6 +3,7 @@ package me.maximpestryakov.yandextranslate.translate;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import io.realm.Realm;
 import me.maximpestryakov.yandextranslate.api.ApiManager;
 import me.maximpestryakov.yandextranslate.api.YandexTranslateApi;
 import me.maximpestryakov.yandextranslate.model.Translation;
@@ -22,6 +23,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                 (call, response) -> {
                     Translation translation = response.body();
                     translation.setOriginal(textToTranslate);
+
+                    Realm.getDefaultInstance().executeTransaction(realm -> realm.copyToRealmOrUpdate(translation));
+
                     getViewState().showTranslation(translation);
                 },
                 (call, t) -> {

@@ -39,12 +39,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     private String textToTranslateValue;
 
     public static TranslateFragment newInstance() {
-        Bundle args = new Bundle();
-        args.putString("text", "");
-
-        TranslateFragment fragment = new TranslateFragment();
-        fragment.setArguments(args);
-        return fragment;
+        return new TranslateFragment();
     }
 
     public static TranslateFragment newInstance(String text) {
@@ -62,7 +57,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
         Bundle args = getArguments();
         if (args != null) {
-            textToTranslateValue = args.getString("text");
+            textToTranslateValue = args.getString("text", null);
         }
     }
 
@@ -78,15 +73,16 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         ButterKnife.bind(this, view);
 
         doTranslate.setOnClickListener(v -> translatePresenter.onTranslate(textToTranslate.getText().toString()));
-        if (textToTranslateValue != null) {
+        if (textToTranslateValue != null && !textToTranslateValue.isEmpty()) {
+            textToTranslate.setText(textToTranslateValue);
             translatePresenter.onTranslate(textToTranslateValue);
         }
     }
 
     @Override
     public void showTranslation(Translation translation) {
-        translatedText.setText(translation.getText().get(0));
+        translatedText.setText(translation.getText().get(0).getValue());
         favorite.setChecked(translation.isFavorite());
-        favorite.setOnCheckedChangeListener((buttonView, isChecked) -> translation.setFavorite(isChecked));
+        favorite.setOnCheckedChangeListener((v, isChecked) -> translation.setFavorite(isChecked));
     }
 }
