@@ -12,9 +12,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
-
 
 class TranslationsAdapter extends RecyclerView.Adapter<TranslationsAdapter.FavoriteViewHolder> {
 
@@ -48,10 +48,13 @@ class TranslationsAdapter extends RecyclerView.Adapter<TranslationsAdapter.Favor
     }
 
     private void updateData() {
-        Realm.getDefaultInstance().executeTransaction(realm ->
-                translations = realm.where(Translation.class)
-                        .equalTo("favorite", onlyFavorites)
-                        .findAll());
+        Realm.getDefaultInstance().executeTransaction(realm -> {
+            RealmQuery<Translation> query = realm.where(Translation.class);
+            if (onlyFavorites) {
+                query.equalTo("favorite", true);
+            }
+            translations = query.findAll();
+        });
         notifyDataSetChanged();
     }
 

@@ -15,6 +15,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
 
@@ -83,6 +84,9 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     public void showTranslation(Translation translation) {
         translatedText.setText(translation.getText().get(0).getValue());
         favorite.setChecked(translation.isFavorite());
-        favorite.setOnCheckedChangeListener((v, isChecked) -> translation.setFavorite(isChecked));
+        favorite.setOnCheckedChangeListener((v, isChecked) -> {
+            translation.setFavorite(isChecked);
+            Realm.getDefaultInstance().executeTransaction(realm -> realm.copyToRealmOrUpdate(translation));
+        });
     }
 }
