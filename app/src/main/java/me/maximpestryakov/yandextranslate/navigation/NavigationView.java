@@ -1,10 +1,15 @@
 package me.maximpestryakov.yandextranslate.navigation;
 
-import android.support.v4.app.Fragment;
-
 import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy;
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
-public interface NavigationView extends MvpView {
+@StateStrategyType(SingleStateStrategy.class)
+interface NavigationView extends MvpView {
 
-    void showFragment(Fragment fragment, String tag);
+    void showTranslate();
+
+    void showFavorites();
+
+    void showHistory();
 }

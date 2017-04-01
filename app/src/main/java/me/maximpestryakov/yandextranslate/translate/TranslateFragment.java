@@ -78,14 +78,15 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         ButterKnife.bind(this, view);
 
         doTranslate.setOnClickListener(v -> translatePresenter.onTranslate(textToTranslate.getText().toString()));
+        if (textToTranslateValue != null) {
+            translatePresenter.onTranslate(textToTranslateValue);
+        }
     }
 
     @Override
     public void showTranslation(Translation translation) {
         translatedText.setText(translation.getText().get(0));
         favorite.setChecked(translation.isFavorite());
-        favorite.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            translation.setFavorite(isChecked);
-        });
+        favorite.setOnCheckedChangeListener((buttonView, isChecked) -> translation.setFavorite(isChecked));
     }
 }
