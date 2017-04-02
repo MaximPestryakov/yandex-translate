@@ -1,7 +1,9 @@
 package me.maximpestryakov.yandextranslate.translations;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmQuery;
+import me.maximpestryakov.yandextranslate.App;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
 
@@ -23,9 +26,10 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
     @InjectPresenter
     TranslationsPresenter translationsPresenter;
 
-    @BindView(R.id.favoriteList)
-    RecyclerView favoriteList;
+    @BindView(R.id.translationList)
+    RecyclerView translationList;
 
+    private Context context;
     private Boolean onlyFavorites;
 
     public static TranslationsFragment newInstance(boolean onlyFavorites) {
@@ -43,6 +47,7 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         if (args != null) {
             onlyFavorites = args.getBoolean("only_favorites", false);
         }
+        context = App.from(getActivity());
     }
 
     @Nullable
@@ -62,13 +67,17 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         if (onlyFavorites) {
             query.equalTo("favorite", true);
         }
-        TranslationAdapter translationAdapter = new TranslationAdapter(query.findAll(), v -> {
+        TranslationsAdapter translationsAdapter = new TranslationsAdapter(query.findAll(), v -> {
 
         });
         realm.commitTransaction();
 
-        favoriteList.setHasFixedSize(true);
-        favoriteList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        favoriteList.setAdapter(translationAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        DividerItemDecoration decoration = new DividerItemDecoration(context, layoutManager.getOrientation());
+
+        translationList.setHasFixedSize(true);
+        translationList.setLayoutManager(layoutManager);
+        translationList.addItemDecoration(decoration);
+        translationList.setAdapter(translationsAdapter);
     }
 }

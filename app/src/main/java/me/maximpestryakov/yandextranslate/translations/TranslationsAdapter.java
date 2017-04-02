@@ -6,20 +6,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
 
-class TranslationAdapter extends RealmRecyclerViewAdapter<Translation, TranslationAdapter.TranslationViewHolder> {
+class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, TranslationsAdapter.TranslationViewHolder> {
 
     private OnClickListener onTranslationClick;
 
-    TranslationAdapter(@Nullable OrderedRealmCollection<Translation> data, OnClickListener onTranslationClick) {
+    TranslationsAdapter(@Nullable OrderedRealmCollection<Translation> data, OnClickListener onTranslationClick) {
         super(data, true);
         this.onTranslationClick = onTranslationClick;
     }
@@ -38,6 +40,9 @@ class TranslationAdapter extends RealmRecyclerViewAdapter<Translation, Translati
 
     static class TranslationViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.itemFavorite)
+        CheckBox itemFavorite;
+
         @BindView(R.id.itemOriginal)
         TextView itemOriginal;
 
@@ -53,6 +58,13 @@ class TranslationAdapter extends RealmRecyclerViewAdapter<Translation, Translati
             itemView.setOnClickListener(onTranslationClick);
             itemOriginal.setText(translation.getOriginal());
             itemTranslation.setText(translation.getText().get(0).getValue());
+            itemFavorite.setChecked(translation.isFavorite());
+            itemFavorite.setOnClickListener(v -> {
+                Realm.getDefaultInstance().executeTransaction(realm -> {
+                    translation.setFavorite(itemFavorite.isChecked());
+                    realm.copyToRealmOrUpdate(translation);
+                });
+            });
         }
     }
 }

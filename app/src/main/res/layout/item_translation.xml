@@ -6,15 +6,24 @@
     android:background="?attr/selectableItemBackground"
     android:clickable="true">
 
+    <CheckBox
+        android:id="@+id/itemFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:button="@drawable/checkbox_favorite_custom" />
+
 
     <TextView
         android:id="@+id/itemOriginal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/itemFavorite"
         android:textColor="@color/colorPrimaryText"
         android:textSize="16sp"
         tools:text="Какая-нибудь фраза" />
