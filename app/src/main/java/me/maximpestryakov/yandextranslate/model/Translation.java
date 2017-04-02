@@ -34,6 +34,10 @@ public class Translation extends RealmObject {
         return lang;
     }
 
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
     public List<RealmString> getText() {
         return text;
     }

@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmQuery;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
 
@@ -26,7 +26,6 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
     @BindView(R.id.favoriteList)
     RecyclerView favoriteList;
 
-    private TranslationsAdapter translationsAdapter;
     private Boolean onlyFavorites;
 
     public static TranslationsFragment newInstance(boolean onlyFavorites) {
@@ -42,7 +41,7 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            onlyFavorites = args.getBoolean("only_favorites");
+            onlyFavorites = args.getBoolean("only_favorites", false);
         }
     }
 
@@ -57,17 +56,19 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        translationsAdapter = new TranslationsAdapter(onlyFavorites, v -> {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmQuery<Translation> query = realm.where(Translation.class);
+        if (onlyFavorites) {
+            query.equalTo("favorite", true);
+        }
+        TranslationAdapter translationAdapter = new TranslationAdapter(query.findAll(), v -> {
 
         });
+        realm.commitTransaction();
 
         favoriteList.setHasFixedSize(true);
         favoriteList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        favoriteList.setAdapter(translationsAdapter);
-    }
-
-    @Override
-    public void showFavorites(List<Translation> favorites) {
-        // translationsAdapter.setTranslations(favorites);
+        favoriteList.setAdapter(translationAdapter);
     }
 }

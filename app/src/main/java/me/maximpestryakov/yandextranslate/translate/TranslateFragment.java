@@ -83,10 +83,10 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     @Override
     public void showTranslation(Translation translation) {
         translatedText.setText(translation.getText().get(0).getValue());
+        favorite.setOnClickListener(v -> Realm.getDefaultInstance().executeTransaction(realm -> {
+            translation.setFavorite(favorite.isChecked());
+            realm.copyToRealmOrUpdate(translation);
+        }));
         favorite.setChecked(translation.isFavorite());
-        favorite.setOnCheckedChangeListener((v, isChecked) -> {
-            translation.setFavorite(isChecked);
-            Realm.getDefaultInstance().executeTransaction(realm -> realm.copyToRealmOrUpdate(translation));
-        });
     }
 }

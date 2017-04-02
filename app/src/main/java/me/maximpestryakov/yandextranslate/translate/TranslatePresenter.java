@@ -19,18 +19,28 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
     void onTranslate(String textToTranslate) {
-        api.translate(textToTranslate, "en-ru", "plain").enqueue(new Callback<>(
-                (call, response) -> {
-                    Translation translation = response.body();
-                    translation.setOriginal(textToTranslate);
+        Translation translation;
 
-                    Realm.getDefaultInstance().executeTransaction(realm -> realm.copyToRealmOrUpdate(translation));
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        translation = realm.where(Translation.class).equalTo("original", textToTranslate).findFirst();
+        if (translation != null) {
+            getViewState().showTranslation(translation);
+        }
+        realm.commitTransaction();
 
-                    getViewState().showTranslation(translation);
-                },
-                (call, t) -> {
-                    // show error
-                }
-        ));
+        api.translate(textToTranslate, "en-ru", "plain").enqueue(new Callback<>((call, response) -> {
+            Translation newTranslation = response.body();
+            newTranslation.setOriginal(textToTranslate);
+            if (translation != null) {
+                newTranslation.setFavorite(translation.isFavorite());
+            }
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(newTranslation);
+            realm.commitTransaction();
+            getViewState().showTranslation(newTranslation);
+        }, (call, t) -> {
+            // show error
+        }));
     }
 }
