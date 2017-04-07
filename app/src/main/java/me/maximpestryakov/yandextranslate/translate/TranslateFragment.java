@@ -5,9 +5,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
@@ -37,6 +39,11 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     @BindView(R.id.favorite)
     CheckBox favorite;
 
+    @BindView(R.id.swapLang)
+    ImageView swapLang;
+
+    private Realm realm;
+
     private String textToTranslateValue;
 
     public static TranslateFragment newInstance() {
@@ -60,6 +67,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         if (args != null) {
             textToTranslateValue = args.getString("text", null);
         }
+        realm = Realm.getDefaultInstance();
     }
 
     @Nullable
@@ -78,12 +86,24 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
             textToTranslate.setText(textToTranslateValue);
             translatePresenter.onTranslate(textToTranslateValue);
         }
+
+        swapLang.setOnClickListener(v -> {
+            RotateAnimation animation = new RotateAnimation(0, 180, swapLang.getWidth() / 2, swapLang.getHeight() / 2);
+            animation.setDuration(100);
+            swapLang.startAnimation(animation);
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     @Override
     public void showTranslation(Translation translation) {
         translatedText.setText(translation.getText().get(0).getValue());
-        favorite.setOnClickListener(v -> Realm.getDefaultInstance().executeTransaction(realm -> {
+        favorite.setOnClickListener(v -> realm.executeTransaction(realm -> {
             translation.setFavorite(favorite.isChecked());
             realm.copyToRealmOrUpdate(translation);
         }));

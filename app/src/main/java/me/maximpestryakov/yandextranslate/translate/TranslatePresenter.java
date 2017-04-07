@@ -19,28 +19,24 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
     void onTranslate(String textToTranslate) {
-        Translation translation;
+        try (Realm r = Realm.getDefaultInstance()) {
+            r.executeTransaction(realm -> {
+                Translation translation = realm.where(Translation.class)
+                        .equalTo("original", textToTranslate).findFirst();
+                if (translation != null) {
+                    getViewState().showTranslation(translation);
+                }
+                api.translate(textToTranslate, "en-ru", "plain").enqueue(new Callback<>((call, response) -> {
+                    Translation newTranslation = response.body();
+                    if (translation != null) {
+                        newTranslation.setFavorite(translation.isFavorite());
+                        realm.copyToRealmOrUpdate(newTranslation);
+                        getViewState().showTranslation(newTranslation);
+                    }
+                }, (call, t) -> {
 
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        translation = realm.where(Translation.class).equalTo("original", textToTranslate).findFirst();
-        if (translation != null) {
-            getViewState().showTranslation(translation);
+                }));
+            });
         }
-        realm.commitTransaction();
-
-        api.translate(textToTranslate, "en-ru", "plain").enqueue(new Callback<>((call, response) -> {
-            Translation newTranslation = response.body();
-            newTranslation.setOriginal(textToTranslate);
-            if (translation != null) {
-                newTranslation.setFavorite(translation.isFavorite());
-            }
-            realm.beginTransaction();
-            realm.copyToRealmOrUpdate(newTranslation);
-            realm.commitTransaction();
-            getViewState().showTranslation(newTranslation);
-        }, (call, t) -> {
-            // show error
-        }));
     }
 }

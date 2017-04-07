@@ -60,10 +60,9 @@ class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, Translat
             itemTranslation.setText(translation.getText().get(0).getValue());
             itemFavorite.setChecked(translation.isFavorite());
             itemFavorite.setOnClickListener(v -> {
-                Realm.getDefaultInstance().executeTransaction(realm -> {
-                    translation.setFavorite(itemFavorite.isChecked());
-                    realm.copyToRealmOrUpdate(translation);
-                });
+                try (Realm r = Realm.getDefaultInstance()) {
+                    r.executeTransaction(realm -> translation.setFavorite(itemFavorite.isChecked()));
+                }
             });
         }
     }

@@ -15,6 +15,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import me.maximpestryakov.yandextranslate.App;
@@ -29,7 +30,10 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
     @BindView(R.id.translationList)
     RecyclerView translationList;
 
+    private Realm realm;
+
     private Context context;
+
     private Boolean onlyFavorites;
 
     public static TranslationsFragment newInstance(boolean onlyFavorites) {
@@ -47,6 +51,7 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         if (args != null) {
             onlyFavorites = args.getBoolean("only_favorites", false);
         }
+        realm = Realm.getDefaultInstance();
         context = App.from(getActivity());
     }
 
@@ -61,17 +66,16 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
+        OrderedRealmCollection<Translation> translations;
         RealmQuery<Translation> query = realm.where(Translation.class);
         if (onlyFavorites) {
             query.equalTo("favorite", true);
         }
-        TranslationsAdapter translationsAdapter = new TranslationsAdapter(query.findAll(), v -> {
+        translations = query.findAll();
 
+
+        TranslationsAdapter translationsAdapter = new TranslationsAdapter(translations, v -> {
         });
-        realm.commitTransaction();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         DividerItemDecoration decoration = new DividerItemDecoration(context, layoutManager.getOrientation());
 
@@ -79,5 +83,11 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         translationList.setLayoutManager(layoutManager);
         translationList.addItemDecoration(decoration);
         translationList.setAdapter(translationsAdapter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 }
