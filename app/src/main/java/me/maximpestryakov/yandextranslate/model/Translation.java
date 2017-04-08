@@ -11,16 +11,16 @@ import me.maximpestryakov.yandextranslate.util.RealmString;
 
 public class Translation extends RealmObject {
 
+    @PrimaryKey
+    private String original;
+
+    private boolean favorite;
+
     @SerializedName("lang")
     private String lang;
 
     @SerializedName("text")
     private RealmList<RealmString> text;
-
-    @PrimaryKey
-    private String original;
-
-    private boolean favorite;
 
     public String getOriginal() {
         return original;

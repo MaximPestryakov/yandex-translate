@@ -13,7 +13,8 @@ public class RealmString extends RealmObject {
         this.value = value;
     }
 
-    public String getValue() {
+    @Override
+    public String toString() {
         return value;
     }
 }

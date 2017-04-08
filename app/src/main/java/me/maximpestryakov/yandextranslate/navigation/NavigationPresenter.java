@@ -1,20 +1,20 @@
 package me.maximpestryakov.yandextranslate.navigation;
 
+import android.support.annotation.IdRes;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
 import me.maximpestryakov.yandextranslate.R;
-import me.maximpestryakov.yandextranslate.translate.TranslateFragment;
 
 @InjectViewState
 public class NavigationPresenter extends MvpPresenter<NavigationView> {
 
     NavigationPresenter() {
-        TranslateFragment fragment = TranslateFragment.newInstance();
         getViewState().showTranslate();
     }
 
-    boolean onNavigate(int itemId) {
+    boolean onNavigate(@IdRes int itemId) {
         switch (itemId) {
             case R.id.navTranslate:
                 getViewState().showTranslate();

@@ -15,12 +15,14 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import me.maximpestryakov.yandextranslate.App;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
+import me.maximpestryakov.yandextranslate.navigation.NavigationActivity;
 
 public class TranslationsFragment extends MvpAppCompatFragment implements TranslationsView {
 
@@ -29,6 +31,8 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
 
     @BindView(R.id.translationList)
     RecyclerView translationList;
+
+    private Unbinder unbinder;
 
     private Realm realm;
 
@@ -58,13 +62,9 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_favorites, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_favorites, container, false);
+        unbinder = ButterKnife.bind(this, view);
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
 
         OrderedRealmCollection<Translation> translations;
         RealmQuery<Translation> query = realm.where(Translation.class);
@@ -74,8 +74,7 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         translations = query.findAll();
 
 
-        TranslationsAdapter translationsAdapter = new TranslationsAdapter(translations, v -> {
-        });
+        TranslationsAdapter translationsAdapter = new TranslationsAdapter(translations, this::showTranslation);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         DividerItemDecoration decoration = new DividerItemDecoration(context, layoutManager.getOrientation());
 
@@ -83,11 +82,26 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         translationList.setLayoutManager(layoutManager);
         translationList.addItemDecoration(decoration);
         translationList.setAdapter(translationsAdapter);
+
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         realm.close();
+    }
+
+    @Override
+    public void showTranslation(String textToTranslate) {
+        if (getActivity() instanceof NavigationActivity) {
+            ((NavigationActivity) getActivity()).navigateToTranslate(textToTranslate);
+        }
     }
 }

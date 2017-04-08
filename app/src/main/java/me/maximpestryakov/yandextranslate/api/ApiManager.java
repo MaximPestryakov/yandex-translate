@@ -1,5 +1,6 @@
 package me.maximpestryakov.yandextranslate.api;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.GsonBuilder;
 
 import me.maximpestryakov.yandextranslate.util.RealmString;
@@ -18,7 +19,6 @@ public class ApiManager {
     }
 
     public static void init() {
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     Request originalRequest = chain.request();
@@ -34,10 +34,11 @@ public class ApiManager {
 
                     return chain.proceed(request);
                 })
+                .addNetworkInterceptor(new StethoInterceptor())
                 .build();
 
         api = new Retrofit.Builder()
-                .baseUrl("https://translate.yandex.net/api/v1.5/tr.json/")
+                .baseUrl(YandexTranslateApi.URL)
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
                         .registerTypeAdapter(RealmString.class, new RealmStringDeserializer())
                         .create()))

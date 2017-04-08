@@ -5,6 +5,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -16,6 +17,10 @@ import me.maximpestryakov.yandextranslate.translate.TranslateFragment;
 import me.maximpestryakov.yandextranslate.translations.TranslationsFragment;
 
 public class NavigationActivity extends MvpAppCompatActivity implements NavigationView {
+
+    private static final String TRANSLATE_TAG = "translate";
+    private static final String HISTORY_TAG = "history";
+    private static final String FAVORITES_TAG = "favorites";
 
     @InjectPresenter
     NavigationPresenter navigationPresenter;
@@ -34,51 +39,66 @@ public class NavigationActivity extends MvpAppCompatActivity implements Navigati
 
     @Override
     public void onBackPressed() {
-        navigationPresenter.onNavigate(R.id.navTranslate);
+        if (bottomNav.getSelectedItemId() == R.id.navTranslate) {
+            finish();
+        } else {
+            bottomNav.setSelectedItemId(R.id.navTranslate);
+        }
     }
 
     @Override
     public void showTranslate() {
+        bottomNav.getMenu().findItem(R.id.navTranslate).setChecked(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("fragment_translate");
+        Fragment fragment = fragmentManager.findFragmentByTag(TRANSLATE_TAG);
         if (fragment == null) {
             fragment = TranslateFragment.newInstance();
-            showFragment(fragment, "fragment_translate", true);
+            showFragment(fragment, TRANSLATE_TAG, true);
         } else {
-            showFragment(fragment, "fragment_translate", false);
+            showFragment(fragment, TRANSLATE_TAG, false);
         }
     }
 
     @Override
     public void showFavorites() {
+        bottomNav.getMenu().findItem(R.id.navFavorite).setChecked(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("fragment_favorites");
+        Fragment fragment = fragmentManager.findFragmentByTag(FAVORITES_TAG);
         if (fragment == null) {
             fragment = TranslationsFragment.newInstance(true);
-            showFragment(fragment, "fragment_favorites", true);
+            showFragment(fragment, FAVORITES_TAG, true);
         } else {
-            showFragment(fragment, "fragment_favorites", false);
+            showFragment(fragment, FAVORITES_TAG, false);
         }
     }
 
     @Override
     public void showHistory() {
+        bottomNav.getMenu().findItem(R.id.navHistory).setChecked(true);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("fragment_history");
+        Fragment fragment = fragmentManager.findFragmentByTag(HISTORY_TAG);
         if (fragment == null) {
             fragment = TranslationsFragment.newInstance(false);
-            showFragment(fragment, "fragment_history", true);
+            showFragment(fragment, HISTORY_TAG, true);
         } else {
-            showFragment(fragment, "fragment_history", false);
+            showFragment(fragment, HISTORY_TAG, false);
         }
     }
 
     public void showFragment(Fragment fragment, String tag, boolean addToBackStack) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.mainFragment, fragment, tag);
         if (addToBackStack) {
             transaction.addToBackStack(null);
         }
         transaction.commit();
+        Log.d("MyTag", "COUNT: " + fragmentManager.getBackStackEntryCount());
+    }
+
+    public void navigateToTranslate(String textToTranslate) {
+        navigationPresenter.onNavigate(R.id.navTranslate);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TRANSLATE_TAG);
+        ((TranslateFragment) fragment).setTextToTranslate(textToTranslate);
     }
 }

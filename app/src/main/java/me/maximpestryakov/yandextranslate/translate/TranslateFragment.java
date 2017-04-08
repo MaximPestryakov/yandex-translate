@@ -6,19 +6,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.RotateAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.realm.Realm;
 import me.maximpestryakov.yandextranslate.R;
+import me.maximpestryakov.yandextranslate.model.Language;
 import me.maximpestryakov.yandextranslate.model.Translation;
 
 
@@ -42,44 +48,35 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     @BindView(R.id.swapLang)
     ImageView swapLang;
 
+    @BindView(R.id.langFrom)
+    Spinner langFrom;
+
+    @BindView(R.id.langTo)
+    Spinner langTo;
+
+    private Unbinder unbinder;
+
     private Realm realm;
 
     private String textToTranslateValue;
+
+    private ArrayAdapter<String> languagesAdapter;
 
     public static TranslateFragment newInstance() {
         return new TranslateFragment();
     }
 
-    public static TranslateFragment newInstance(String text) {
-        Bundle args = new Bundle();
-        args.putString("text", text);
-
-        TranslateFragment fragment = new TranslateFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Bundle args = getArguments();
-        if (args != null) {
-            textToTranslateValue = args.getString("text", null);
-        }
         realm = Realm.getDefaultInstance();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_translate, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        View view = inflater.inflate(R.layout.fragment_translate, container, false);
+        unbinder = ButterKnife.bind(this, view);
 
         doTranslate.setOnClickListener(v -> translatePresenter.onTranslate(textToTranslate.getText().toString()));
         if (textToTranslateValue != null && !textToTranslateValue.isEmpty()) {
@@ -91,7 +88,19 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
             RotateAnimation animation = new RotateAnimation(0, 180, swapLang.getWidth() / 2, swapLang.getHeight() / 2);
             animation.setDuration(100);
             swapLang.startAnimation(animation);
+            translatePresenter.loadLangs();
         });
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_dropdown_item);
+        langFrom.setAdapter(arrayAdapter);
+
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
@@ -102,11 +111,21 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     @Override
     public void showTranslation(Translation translation) {
-        translatedText.setText(translation.getText().get(0).getValue());
+        textToTranslate.setText(translation.getOriginal());
+        translatedText.setText(translation.getText().get(0).toString());
         favorite.setOnClickListener(v -> realm.executeTransaction(realm -> {
             translation.setFavorite(favorite.isChecked());
             realm.copyToRealmOrUpdate(translation);
         }));
         favorite.setChecked(translation.isFavorite());
+    }
+
+    @Override
+    public void showLangs(List<Language> languages) {
+
+    }
+
+    public void setTextToTranslate(String textToTranslate) {
+        translatePresenter.onTranslate(textToTranslate);
     }
 }

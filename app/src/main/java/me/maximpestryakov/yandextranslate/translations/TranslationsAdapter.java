@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -19,9 +18,9 @@ import me.maximpestryakov.yandextranslate.model.Translation;
 
 class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, TranslationsAdapter.TranslationViewHolder> {
 
-    private OnClickListener onTranslationClick;
+    private OnTranslationClickListener onTranslationClick;
 
-    TranslationsAdapter(@Nullable OrderedRealmCollection<Translation> data, OnClickListener onTranslationClick) {
+    TranslationsAdapter(@Nullable OrderedRealmCollection<Translation> data, OnTranslationClickListener onTranslationClick) {
         super(data, true);
         this.onTranslationClick = onTranslationClick;
     }
@@ -36,6 +35,11 @@ class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, Translat
     public void onBindViewHolder(TranslationViewHolder holder, int position) {
         Translation translation = getItem(position);
         holder.bind(onTranslationClick, translation);
+    }
+
+    interface OnTranslationClickListener {
+
+        void onClick(String textToTranslate);
     }
 
     static class TranslationViewHolder extends RecyclerView.ViewHolder {
@@ -54,10 +58,10 @@ class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, Translat
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(OnClickListener onTranslationClick, Translation translation) {
-            itemView.setOnClickListener(onTranslationClick);
+        void bind(OnTranslationClickListener onTranslationClick, Translation translation) {
+            itemView.setOnClickListener(v -> onTranslationClick.onClick(translation.getOriginal()));
             itemOriginal.setText(translation.getOriginal());
-            itemTranslation.setText(translation.getText().get(0).getValue());
+            itemTranslation.setText(translation.getText().get(0).toString());
             itemFavorite.setChecked(translation.isFavorite());
             itemFavorite.setOnClickListener(v -> {
                 try (Realm r = Realm.getDefaultInstance()) {

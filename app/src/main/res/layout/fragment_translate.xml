@@ -61,8 +61,9 @@
         android:layout_above="@+id/textToTranslate"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
-        android:background="?selectableItemBackgroundBorderless"
+        android:background="?attr/selectableItemBackground"
         android:clickable="true"
+        android:tint="@android:color/white"
         app:srcCompat="@drawable/ic_swap_horiz_black_24dp" />
 
     <android.support.design.widget.FloatingActionButton
@@ -74,7 +75,23 @@
         android:layout_marginBottom="12dp"
         android:layout_marginEnd="13dp"
         android:clickable="true"
+        android:tint="@android:color/white"
         app:fabSize="mini"
         app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
+
+    <Spinner
+        android:id="@+id/langFrom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/swapLang"
+        android:layout_toStartOf="@+id/swapLang" />
+
+    <Spinner
+        android:id="@+id/langTo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/swapLang"
+        android:layout_toEndOf="@+id/swapLang" />
 
 </RelativeLayout>

@@ -1,6 +1,5 @@
 package me.maximpestryakov.yandextranslate.util;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -12,7 +11,7 @@ public class RealmStringDeserializer implements JsonDeserializer<RealmString> {
 
     @Override
     public RealmString deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        String value = new Gson().fromJson(json, String.class);
+        String value = json.getAsString();
         return new RealmString(value);
     }
 }
