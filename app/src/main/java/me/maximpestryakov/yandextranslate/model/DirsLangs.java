@@ -16,7 +16,15 @@ public class DirsLangs {
         return directions;
     }
 
+    public void setDirections(List<Direction> directions) {
+        this.directions = directions;
+    }
+
     public List<Language> getLanguages() {
         return languages;
+    }
+
+    public void setLanguages(List<Language> languages) {
+        this.languages = languages;
     }
 }

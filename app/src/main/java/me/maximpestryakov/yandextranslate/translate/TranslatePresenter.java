@@ -1,5 +1,7 @@
 package me.maximpestryakov.yandextranslate.translate;
 
+import android.util.Log;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
@@ -17,6 +19,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     TranslatePresenter() {
         api = ApiManager.getApi();
+        loadLangs();
     }
 
     void onTranslate(String textToTranslate) {
@@ -46,10 +49,18 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     void loadLangs() {
         api.getLangs("ru").enqueue(new Callback<>((call, response) -> {
+            Log.d("MyTag", response.code() + "");
             DirsLangs dirsLangs = response.body();
+            try (Realm realm = Realm.getDefaultInstance()) {
+                realm.executeTransaction(r -> {
+                    r.copyToRealmOrUpdate(dirsLangs.getLanguages());
+                    r.copyToRealmOrUpdate(dirsLangs.getDirections());
+                });
+            }
+            getViewState().showLangs(dirsLangs.getLanguages());
 
         }, (call, t) -> {
-
+            t.printStackTrace();
         }));
     }
 }

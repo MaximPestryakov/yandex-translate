@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -88,11 +89,11 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
             RotateAnimation animation = new RotateAnimation(0, 180, swapLang.getWidth() / 2, swapLang.getHeight() / 2);
             animation.setDuration(100);
             swapLang.startAnimation(animation);
-            translatePresenter.loadLangs();
         });
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
+        languagesAdapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_spinner_dropdown_item);
-        langFrom.setAdapter(arrayAdapter);
+        langFrom.setAdapter(languagesAdapter);
+        langTo.setAdapter(languagesAdapter);
 
         return view;
     }
@@ -122,7 +123,12 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     @Override
     public void showLangs(List<Language> languages) {
-
+        List<String> languageStrings = new ArrayList<>();
+        for (Language language : languages) {
+            languageStrings.add(language.getTitle());
+        }
+        languagesAdapter.clear();
+        languagesAdapter.addAll(languageStrings);
     }
 
     public void setTextToTranslate(String textToTranslate) {

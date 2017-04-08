@@ -5,7 +5,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -93,7 +92,6 @@ public class NavigationActivity extends MvpAppCompatActivity implements Navigati
             transaction.addToBackStack(null);
         }
         transaction.commit();
-        Log.d("MyTag", "COUNT: " + fragmentManager.getBackStackEntryCount());
     }
 
     public void navigateToTranslate(String textToTranslate) {

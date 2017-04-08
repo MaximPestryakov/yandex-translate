@@ -3,6 +3,8 @@ package me.maximpestryakov.yandextranslate.api;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.GsonBuilder;
 
+import me.maximpestryakov.yandextranslate.model.DirsLangs;
+import me.maximpestryakov.yandextranslate.util.DirsLangsDeserializer;
 import me.maximpestryakov.yandextranslate.util.RealmString;
 import me.maximpestryakov.yandextranslate.util.RealmStringDeserializer;
 import okhttp3.HttpUrl;
@@ -41,6 +43,7 @@ public class ApiManager {
                 .baseUrl(YandexTranslateApi.URL)
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
                         .registerTypeAdapter(RealmString.class, new RealmStringDeserializer())
+                        .registerTypeAdapter(DirsLangs.class, new DirsLangsDeserializer())
                         .create()))
                 .client(client)
                 .build()

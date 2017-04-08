@@ -53,6 +53,9 @@ class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, Translat
         @BindView(R.id.itemTranslation)
         TextView itemTranslation;
 
+        @BindView(R.id.itemDirection)
+        TextView itemDirection;
+
         TranslationViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

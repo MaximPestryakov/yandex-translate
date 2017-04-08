@@ -38,4 +38,15 @@
         android:textSize="14sp"
         tools:text="Any phrase" />
 
+    <TextView
+        android:id="@+id/itemDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/colorSecondaryText"
+        android:textSize="14sp"
+        tools:text="EN-RU" />
+
 </RelativeLayout>
