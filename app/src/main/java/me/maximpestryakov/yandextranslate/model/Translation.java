@@ -2,8 +2,6 @@ package me.maximpestryakov.yandextranslate.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -12,6 +10,8 @@ import me.maximpestryakov.yandextranslate.util.RealmString;
 public class Translation extends RealmObject {
 
     @PrimaryKey
+    private int id;
+
     private String original;
 
     private boolean favorite;
@@ -22,12 +22,28 @@ public class Translation extends RealmObject {
     @SerializedName("text")
     private RealmList<RealmString> text;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getOriginal() {
         return original;
     }
 
     public void setOriginal(String original) {
         this.original = original;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 
     public String getLang() {
@@ -38,15 +54,11 @@ public class Translation extends RealmObject {
         this.lang = lang;
     }
 
-    public List<RealmString> getText() {
+    public RealmList<RealmString> getText() {
         return text;
     }
 
-    public boolean isFavorite() {
-        return favorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        this.favorite = favorite;
+    public void setText(RealmList<RealmString> text) {
+        this.text = text;
     }
 }

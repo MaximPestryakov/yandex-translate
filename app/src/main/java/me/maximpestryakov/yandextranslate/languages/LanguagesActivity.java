@@ -46,6 +46,7 @@ public class LanguagesActivity extends MvpAppCompatActivity implements Languages
         String currentLang = getIntent().getStringExtra(CURRENT_LANG);
 
         setSupportActionBar(languagesToolbar);
+
         setTitle("Язык теста");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

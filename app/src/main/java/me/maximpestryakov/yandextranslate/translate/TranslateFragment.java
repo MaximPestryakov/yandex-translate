@@ -178,7 +178,12 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         toLang.setText(this.to.getTitle());
     }
 
-    public void setTextToTranslate(String textToTranslate) {
-        translatePresenter.onTranslate(textToTranslate, from.getCode(), to.getCode());
+    public void setTextToTranslate(String textToTranslate, String langs) {
+        int del = langs.indexOf('-');
+        String from = langs.substring(0, del);
+        String to = langs.substring(del + 1);
+        translatePresenter.onChoseFromLang(from);
+        translatePresenter.onChoseToLang(to);
+        translatePresenter.onTranslate(textToTranslate, from, to);
     }
 }

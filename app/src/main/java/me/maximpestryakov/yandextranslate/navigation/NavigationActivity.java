@@ -94,9 +94,9 @@ public class NavigationActivity extends MvpAppCompatActivity implements Navigati
         transaction.commit();
     }
 
-    public void navigateToTranslate(String textToTranslate) {
+    public void navigateToTranslate(String textToTranslate, String lang) {
         navigationPresenter.onNavigate(R.id.navTranslate);
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TRANSLATE_TAG);
-        ((TranslateFragment) fragment).setTextToTranslate(textToTranslate);
+        ((TranslateFragment) fragment).setTextToTranslate(textToTranslate, lang);
     }
 }

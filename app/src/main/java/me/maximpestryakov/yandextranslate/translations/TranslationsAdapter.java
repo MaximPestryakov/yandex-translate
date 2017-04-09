@@ -39,7 +39,7 @@ class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, Translat
 
     interface OnTranslationClickListener {
 
-        void onClick(String textToTranslate);
+        void onClick(String textToTranslate, String lang);
     }
 
     static class TranslationViewHolder extends RecyclerView.ViewHolder {
@@ -62,7 +62,8 @@ class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, Translat
         }
 
         void bind(OnTranslationClickListener onTranslationClick, Translation translation) {
-            itemView.setOnClickListener(v -> onTranslationClick.onClick(translation.getOriginal()));
+            itemView.setOnClickListener(v -> onTranslationClick.onClick(translation.getOriginal(),
+                    translation.getLang()));
             itemOriginal.setText(translation.getOriginal());
             itemTranslation.setText(translation.getText().get(0).toString());
             itemFavorite.setChecked(translation.isFavorite());

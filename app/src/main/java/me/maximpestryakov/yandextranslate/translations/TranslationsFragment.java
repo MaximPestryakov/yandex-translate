@@ -98,10 +98,9 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         realm.close();
     }
 
-    @Override
-    public void showTranslation(String textToTranslate) {
+    public void showTranslation(String textToTranslate, String lang) {
         if (getActivity() instanceof NavigationActivity) {
-            ((NavigationActivity) getActivity()).navigateToTranslate(textToTranslate);
+            ((NavigationActivity) getActivity()).navigateToTranslate(textToTranslate, lang);
         }
     }
 }
