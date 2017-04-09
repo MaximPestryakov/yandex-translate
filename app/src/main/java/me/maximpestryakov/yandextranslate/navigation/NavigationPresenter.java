@@ -27,9 +27,6 @@ public class NavigationPresenter extends MvpPresenter<NavigationView> {
             case R.id.navHistory:
                 getViewState().showHistory();
                 return true;
-
-            case R.id.navSettings:
-                return false;
         }
         return false;
     }

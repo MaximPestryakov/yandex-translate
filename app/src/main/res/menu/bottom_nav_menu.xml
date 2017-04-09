@@ -17,10 +17,4 @@
         android:enabled="true"
         android:icon="@drawable/ic_history_black_24dp"
         android:title="История" />
-
-    <item
-        android:id="@+id/navSettings"
-        android:enabled="true"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="Настройки" />
 </menu>

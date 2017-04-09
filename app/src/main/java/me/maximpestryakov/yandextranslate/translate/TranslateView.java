@@ -16,4 +16,10 @@ interface TranslateView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showLangs(List<Language> languages);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void setFromLang(String from);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void setToLang(String to);
 }

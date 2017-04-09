@@ -79,19 +79,31 @@
         app:fabSize="mini"
         app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
 
-    <Spinner
-        android:id="@+id/langFrom"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/fromLang"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/swapLang"
-        android:layout_toStartOf="@+id/swapLang" />
+        android:layout_marginEnd="16dp"
+        android:layout_toStartOf="@+id/swapLang"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        tools:text="Англиский" />
 
-    <Spinner
-        android:id="@+id/langTo"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/toLang"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/swapLang"
-        android:layout_toEndOf="@+id/swapLang" />
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@+id/swapLang"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        tools:text="Русский" />
+
 
 </RelativeLayout>

@@ -1,23 +1,23 @@
 package me.maximpestryakov.yandextranslate.translate;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.RotateAnimation;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,11 +25,18 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.Realm;
 import me.maximpestryakov.yandextranslate.R;
+import me.maximpestryakov.yandextranslate.languages.LanguagesActivity;
 import me.maximpestryakov.yandextranslate.model.Language;
 import me.maximpestryakov.yandextranslate.model.Translation;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class TranslateFragment extends MvpAppCompatFragment implements TranslateView {
+
+    public static final int CHOOSE_FROM_LANG = 1;
+
+    public static final int CHOOSE_TO_LANG = 2;
 
     @InjectPresenter
     TranslatePresenter translatePresenter;
@@ -49,11 +56,11 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     @BindView(R.id.swapLang)
     ImageView swapLang;
 
-    @BindView(R.id.langFrom)
-    Spinner langFrom;
+    @BindView(R.id.fromLang)
+    TextView fromLang;
 
-    @BindView(R.id.langTo)
-    Spinner langTo;
+    @BindView(R.id.toLang)
+    TextView toLang;
 
     private Unbinder unbinder;
 
@@ -61,7 +68,9 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     private String textToTranslateValue;
 
-    private ArrayAdapter<String> languagesAdapter;
+    private Language from;
+
+    private Language to;
 
     public static TranslateFragment newInstance() {
         return new TranslateFragment();
@@ -79,23 +88,50 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         View view = inflater.inflate(R.layout.fragment_translate, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        doTranslate.setOnClickListener(v -> translatePresenter.onTranslate(textToTranslate.getText().toString()));
+        doTranslate.setOnClickListener(v -> translatePresenter.onTranslate(
+                textToTranslate.getText().toString(), from.getCode(), to.getCode()));
+
         if (textToTranslateValue != null && !textToTranslateValue.isEmpty()) {
             textToTranslate.setText(textToTranslateValue);
-            translatePresenter.onTranslate(textToTranslateValue);
+            translatePresenter.onTranslate(textToTranslateValue, from.getCode(), to.getCode());
         }
 
+        fromLang.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), LanguagesActivity.class);
+            intent.putExtra(LanguagesActivity.CURRENT_LANG, from.getCode());
+            startActivityForResult(intent, CHOOSE_FROM_LANG);
+        });
+
+        toLang.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), LanguagesActivity.class);
+            intent.putExtra(LanguagesActivity.CURRENT_LANG, to.getCode());
+            startActivityForResult(intent, CHOOSE_TO_LANG);
+        });
+
         swapLang.setOnClickListener(v -> {
+            String from = this.from.getCode();
+            translatePresenter.onChoseFromLang(to.getCode());
+            translatePresenter.onChoseToLang(from);
             RotateAnimation animation = new RotateAnimation(0, 180, swapLang.getWidth() / 2, swapLang.getHeight() / 2);
             animation.setDuration(100);
             swapLang.startAnimation(animation);
         });
-        languagesAdapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_spinner_dropdown_item);
-        langFrom.setAdapter(languagesAdapter);
-        langTo.setAdapter(languagesAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        if (requestCode == CHOOSE_FROM_LANG) {
+            String chosenLang = data.getStringExtra(LanguagesActivity.CHOSEN_LANG);
+            translatePresenter.onChoseFromLang(chosenLang);
+        } else if (requestCode == CHOOSE_TO_LANG) {
+            String chosenLang = data.getStringExtra(LanguagesActivity.CHOSEN_LANG);
+            translatePresenter.onChoseToLang(chosenLang);
+        }
     }
 
     @Override
@@ -127,11 +163,22 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         for (Language language : languages) {
             languageStrings.add(language.getTitle());
         }
-        languagesAdapter.clear();
-        languagesAdapter.addAll(languageStrings);
+        Collections.sort(languageStrings);
+    }
+
+    @Override
+    public void setFromLang(String from) {
+        this.from = realm.where(Language.class).equalTo("code", from).findFirst();
+        fromLang.setText(this.from.getTitle());
+    }
+
+    @Override
+    public void setToLang(String to) {
+        this.to = realm.where(Language.class).equalTo("code", to).findFirst();
+        toLang.setText(this.to.getTitle());
     }
 
     public void setTextToTranslate(String textToTranslate) {
-        translatePresenter.onTranslate(textToTranslate);
+        translatePresenter.onTranslate(textToTranslate, from.getCode(), to.getCode());
     }
 }

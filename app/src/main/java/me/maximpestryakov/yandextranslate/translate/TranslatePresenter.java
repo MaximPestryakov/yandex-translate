@@ -1,7 +1,5 @@
 package me.maximpestryakov.yandextranslate.translate;
 
-import android.util.Log;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
@@ -20,9 +18,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     TranslatePresenter() {
         api = ApiManager.getApi();
         loadLangs();
+        onChoseFromLang("en");
+        onChoseToLang("ru");
     }
 
-    void onTranslate(String textToTranslate) {
+    void onTranslate(String textToTranslate, String from, String to) {
         if (textToTranslate == null || textToTranslate.isEmpty()) {
             return;
         }
@@ -33,7 +33,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
             if (translation != null) {
                 getViewState().showTranslation(translation);
             }
-            api.translate(textToTranslate, "en-ru", "plain").enqueue(new Callback<>((call, response) -> {
+            api.translate(textToTranslate, from + "-" + to, "plain").enqueue(new Callback<>((call, response) -> {
                 Translation newTranslation = response.body();
                 newTranslation.setOriginal(textToTranslate);
                 if (translation != null) {
@@ -49,7 +49,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     void loadLangs() {
         api.getLangs("ru").enqueue(new Callback<>((call, response) -> {
-            Log.d("MyTag", response.code() + "");
             DirsLangs dirsLangs = response.body();
             try (Realm realm = Realm.getDefaultInstance()) {
                 realm.executeTransaction(r -> {
@@ -57,10 +56,18 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                     r.copyToRealmOrUpdate(dirsLangs.getDirections());
                 });
             }
-            getViewState().showLangs(dirsLangs.getLanguages());
+            // getViewState().showLangs(dirsLangs.getLanguages());
 
         }, (call, t) -> {
             t.printStackTrace();
         }));
+    }
+
+    void onChoseFromLang(String from) {
+        getViewState().setFromLang(from);
+    }
+
+    void onChoseToLang(String to) {
+        getViewState().setToLang(to);
     }
 }
