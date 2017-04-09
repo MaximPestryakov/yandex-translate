@@ -16,10 +16,6 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -28,6 +24,7 @@ import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.languages.LanguagesActivity;
 import me.maximpestryakov.yandextranslate.model.Language;
 import me.maximpestryakov.yandextranslate.model.Translation;
+import me.maximpestryakov.yandextranslate.util.MyTextWatcher;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -62,11 +59,12 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     @BindView(R.id.toLang)
     TextView toLang;
 
+    @BindView(R.id.clearText)
+    ImageView clearText;
+
     private Unbinder unbinder;
 
     private Realm realm;
-
-    private String textToTranslateValue;
 
     private Language from;
 
@@ -91,11 +89,6 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         doTranslate.setOnClickListener(v -> translatePresenter.onTranslate(
                 textToTranslate.getText().toString(), from.getCode(), to.getCode()));
 
-        if (textToTranslateValue != null && !textToTranslateValue.isEmpty()) {
-            textToTranslate.setText(textToTranslateValue);
-            translatePresenter.onTranslate(textToTranslateValue, from.getCode(), to.getCode());
-        }
-
         fromLang.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), LanguagesActivity.class);
             intent.putExtra(LanguagesActivity.CURRENT_LANG, from.getCode());
@@ -116,6 +109,22 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
             animation.setDuration(100);
             swapLang.startAnimation(animation);
         });
+
+        textToTranslate.addTextChangedListener(new MyTextWatcher((s, start, before, count) -> {
+            if (s.length() == 0) {
+                clearText.setVisibility(View.GONE);
+            } else {
+                clearText.setVisibility(View.VISIBLE);
+            }
+        }));
+
+        if (textToTranslate.getText().length() == 0) {
+            clearText.setVisibility(View.GONE);
+        } else {
+            clearText.setVisibility(View.VISIBLE);
+        }
+
+        clearText.setOnClickListener(v -> textToTranslate.setText(""));
 
         return view;
     }
@@ -149,21 +158,13 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     @Override
     public void showTranslation(Translation translation) {
         textToTranslate.setText(translation.getOriginal());
+        textToTranslate.setSelection(translation.getOriginal().length());
         translatedText.setText(translation.getText().get(0).toString());
         favorite.setOnClickListener(v -> realm.executeTransaction(realm -> {
             translation.setFavorite(favorite.isChecked());
             realm.copyToRealmOrUpdate(translation);
         }));
         favorite.setChecked(translation.isFavorite());
-    }
-
-    @Override
-    public void showLangs(List<Language> languages) {
-        List<String> languageStrings = new ArrayList<>();
-        for (Language language : languages) {
-            languageStrings.add(language.getTitle());
-        }
-        Collections.sort(languageStrings);
     }
 
     @Override

@@ -80,8 +80,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                     r.copyToRealmOrUpdate(dirsLangs.getDirections());
                 });
             }
-            // getViewState().showLangs(dirsLangs.getLanguages());
-
         }, (call, t) -> {
             t.printStackTrace();
         }));

@@ -6,25 +6,87 @@
     android:layout_height="match_parent"
     tools:context=".translate.TranslateFragment">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/translateToolbar"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary" />
+        android:layout_alignParentTop="true">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/translateToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/fromLang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_toStartOf="@+id/swapLang"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                tools:text="Англиский" />
+
+            <ImageView
+                android:id="@+id/swapLang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:tint="@android:color/white"
+                app:srcCompat="@drawable/ic_swap_horiz_black_24dp" />
+
+            <TextView
+                android:id="@+id/toLang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@+id/swapLang"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                tools:text="Русский" />
+
+        </RelativeLayout>
+
+    </android.support.design.widget.AppBarLayout>
 
     <EditText
         android:id="@+id/textToTranslate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/doTranslate"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/translateToolbar"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textMultiLine" />
+        android:layout_below="@+id/appBar"
+        android:background="@android:color/white"
+        android:gravity="top"
+        android:hint="Введите текст"
+        android:inputType="textMultiLine"
+        android:lines="7"
+        android:paddingBottom="8dp"
+        android:paddingEnd="40dp"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:scrollbars="vertical"
+        tools:text="йцукенрнгирорипмнаспмрипмаваываыва" />
 
     <Button
         android:id="@+id/doTranslate"
@@ -54,17 +116,6 @@
         android:layout_alignTop="@+id/doTranslate"
         android:button="@drawable/checkbox_favorite_custom" />
 
-    <ImageView
-        android:id="@+id/swapLang"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textToTranslate"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:tint="@android:color/white"
-        app:srcCompat="@drawable/ic_swap_horiz_black_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -79,31 +130,16 @@
         app:fabSize="mini"
         app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
 
-    <TextView
-        android:id="@+id/fromLang"
+    <ImageView
+        android:id="@+id/clearText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/swapLang"
-        android:layout_marginEnd="16dp"
-        android:layout_toStartOf="@+id/swapLang"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/appBar"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        tools:text="Англиский" />
-
-    <TextView
-        android:id="@+id/toLang"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/swapLang"
-        android:layout_marginStart="16dp"
-        android:layout_toEndOf="@+id/swapLang"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        tools:text="Русский" />
-
+        app:srcCompat="@drawable/ic_clear_black_24dp" />
 
 </RelativeLayout>
