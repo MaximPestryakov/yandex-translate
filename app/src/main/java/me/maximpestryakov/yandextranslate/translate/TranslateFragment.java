@@ -29,7 +29,6 @@ import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.languages.LanguagesActivity;
 import me.maximpestryakov.yandextranslate.model.Language;
 import me.maximpestryakov.yandextranslate.model.Translation;
-import me.maximpestryakov.yandextranslate.util.MyTextWatcher;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -91,23 +90,21 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         View view = inflater.inflate(R.layout.fragment_translate, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-
         RxTextView.textChanges(textToTranslate)
-                .filter(s -> s.length() > 0)
-                .debounce(500, TimeUnit.MILLISECONDS)
                 .map(CharSequence::toString)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .debounce(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> translatePresenter.onTranslate(s, from.getCode(), to.getCode()));
 
         fromLang.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), LanguagesActivity.class);
-            intent.putExtra(LanguagesActivity.CURRENT_LANG, from.getCode());
+            Intent intent = LanguagesActivity.getStartIntent(getActivity(), from.getCode());
             startActivityForResult(intent, CHOOSE_FROM_LANG);
         });
 
         toLang.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), LanguagesActivity.class);
-            intent.putExtra(LanguagesActivity.CURRENT_LANG, to.getCode());
+            Intent intent = LanguagesActivity.getStartIntent(getActivity(), to.getCode());
             startActivityForResult(intent, CHOOSE_TO_LANG);
         });
 
@@ -159,21 +156,18 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
             });
         });
 
-        textToTranslate.addTextChangedListener(new MyTextWatcher((s, start, before, count) -> {
-            if (s.length() == 0) {
-                clearText.setVisibility(View.GONE);
-            } else {
-                clearText.setVisibility(View.VISIBLE);
-            }
-        }));
+        RxTextView.textChanges(textToTranslate)
+                .map(CharSequence::toString)
+                .map(String::trim)
+                .subscribe(text -> {
+                    if (text.isEmpty()) {
+                        clearText.setVisibility(View.GONE);
+                    } else {
+                        clearText.setVisibility(View.VISIBLE);
+                    }
+                });
 
-        if (textToTranslate.getText().length() == 0) {
-            clearText.setVisibility(View.GONE);
-        } else {
-            clearText.setVisibility(View.VISIBLE);
-        }
-
-        clearText.setOnClickListener(v -> translatePresenter.onClearClick());
+        clearText.setOnClickListener(v -> translatePresenter.onClickClear());
 
         return view;
     }
@@ -206,8 +200,6 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     @Override
     public void showTranslation(Translation translation) {
-        textToTranslate.setText(translation.getOriginal());
-        textToTranslate.setSelection(translation.getOriginal().length());
         translatedText.setText(translation.getText().get(0).toString());
         favorite.setOnClickListener(v -> realm.executeTransaction(realm -> {
             translation.setFavorite(favorite.isChecked());
@@ -229,10 +221,16 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     }
 
     @Override
+    public void showTextToTranslate(String text) {
+        textToTranslate.setText(text);
+        textToTranslate.setSelection(textToTranslate.length());
+    }
+
+    @Override
     public void clear() {
         textToTranslate.setText("");
-        favorite.setChecked(false);
         translatedText.setText("");
+        favorite.setChecked(false);
     }
 
     public void setTextToTranslate(String textToTranslate, String langs) {
@@ -242,5 +240,6 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         translatePresenter.onChoseFromLang(from);
         translatePresenter.onChoseToLang(to);
         translatePresenter.onTranslate(textToTranslate, from, to);
+        translatePresenter.onSetTextToTranslate(textToTranslate);
     }
 }

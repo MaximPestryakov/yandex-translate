@@ -93,7 +93,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
         getViewState().setToLang(to);
     }
 
-    void onClearClick() {
+    void onSetTextToTranslate(String textToTranslate) {
+        getViewState().showTextToTranslate(textToTranslate);
+    }
+
+    void onClickClear() {
         getViewState().clear();
     }
 }

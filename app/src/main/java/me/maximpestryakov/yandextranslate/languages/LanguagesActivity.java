@@ -13,26 +13,25 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
-import me.maximpestryakov.yandextranslate.App;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Language;
 
 public class LanguagesActivity extends MvpAppCompatActivity implements LanguagesView {
 
-    public static final String CURRENT_LANG = "current_lang";
-    public static final String CHOSEN_LANG = "chosen_lang";
-
+    public static final String CHOSEN_LANG = "CHOSEN_LANG";
+    private static final String EXTRA_CURRENT_LANG = "EXTRA_CURRENT_LANG";
     @BindView(R.id.languagesToolbar)
     Toolbar languagesToolbar;
-
     @BindView(R.id.languageList)
     RecyclerView languageList;
-
-    private Context context;
-
     private Realm realm;
-
     private LanguagesAdapter translationsAdapter;
+
+    public static Intent getStartIntent(Context context, String currentLang) {
+        Intent intent = new Intent(context, LanguagesActivity.class);
+        intent.putExtra(EXTRA_CURRENT_LANG, currentLang);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,19 +39,18 @@ public class LanguagesActivity extends MvpAppCompatActivity implements Languages
         setContentView(R.layout.activity_languages);
         ButterKnife.bind(this);
 
-        context = App.from(this);
         realm = Realm.getDefaultInstance();
 
-        String currentLang = getIntent().getStringExtra(CURRENT_LANG);
+        String currentLang = getIntent().getStringExtra(EXTRA_CURRENT_LANG);
 
         setSupportActionBar(languagesToolbar);
 
-        setTitle("Язык теста");
+        setTitle("Язык текста");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         translationsAdapter = new LanguagesAdapter(realm.where(Language.class).findAll(), currentLang);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        DividerItemDecoration decoration = new DividerItemDecoration(context, layoutManager.getOrientation());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        DividerItemDecoration decoration = new DividerItemDecoration(this, layoutManager.getOrientation());
 
         languageList.setHasFixedSize(true);
         languageList.setLayoutManager(layoutManager);
