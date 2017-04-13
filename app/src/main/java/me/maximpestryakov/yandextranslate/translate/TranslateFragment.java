@@ -1,13 +1,14 @@
 package me.maximpestryakov.yandextranslate.translate;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,10 +16,14 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.realm.Realm;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.languages.LanguagesActivity;
@@ -41,14 +46,14 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     @BindView(R.id.textToTranslate)
     EditText textToTranslate;
 
-    @BindView(R.id.doTranslate)
-    Button doTranslate;
-
     @BindView(R.id.translatedText)
     TextView translatedText;
 
     @BindView(R.id.favorite)
     CheckBox favorite;
+
+    @BindView(R.id.translateToolbar)
+    Toolbar translateToolbar;
 
     @BindView(R.id.swapLang)
     ImageView swapLang;
@@ -86,8 +91,13 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         View view = inflater.inflate(R.layout.fragment_translate, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        doTranslate.setOnClickListener(v -> translatePresenter.onTranslate(
-                textToTranslate.getText().toString(), from.getCode(), to.getCode()));
+
+        RxTextView.textChanges(textToTranslate)
+                .filter(s -> s.length() > 0)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .map(CharSequence::toString)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> translatePresenter.onTranslate(s, from.getCode(), to.getCode()));
 
         fromLang.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), LanguagesActivity.class);
@@ -103,11 +113,50 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
         swapLang.setOnClickListener(v -> {
             String from = this.from.getCode();
-            translatePresenter.onChoseFromLang(to.getCode());
-            translatePresenter.onChoseToLang(from);
-            RotateAnimation animation = new RotateAnimation(0, 180, swapLang.getWidth() / 2, swapLang.getHeight() / 2);
-            animation.setDuration(100);
-            swapLang.startAnimation(animation);
+
+            float fromLangX = fromLang.getX();
+            float toLangX = toLang.getX();
+            float newToLangX = fromLangX + fromLang.getWidth() - toLang.getWidth();
+
+            fromLang.animate().x(toLangX).setDuration(250).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    fromLang.setClickable(false);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    fromLang.setX(fromLangX);
+                    translatePresenter.onChoseFromLang(to.getCode());
+                    fromLang.setClickable(true);
+                }
+            });
+
+            toLang.animate().x(newToLangX).setDuration(250).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    toLang.setClickable(false);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    toLang.setX(toLangX);
+                    translatePresenter.onChoseToLang(from);
+                    toLang.setClickable(true);
+                }
+            });
+
+            swapLang.animate().rotationBy(180).setDuration(250).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    swapLang.setClickable(false);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    swapLang.setClickable(true);
+                }
+            });
         });
 
         textToTranslate.addTextChangedListener(new MyTextWatcher((s, start, before, count) -> {
@@ -124,7 +173,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
             clearText.setVisibility(View.VISIBLE);
         }
 
-        clearText.setOnClickListener(v -> textToTranslate.setText(""));
+        clearText.setOnClickListener(v -> translatePresenter.onClearClick());
 
         return view;
     }
@@ -177,6 +226,13 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     public void setToLang(String to) {
         this.to = realm.where(Language.class).equalTo("code", to).findFirst();
         toLang.setText(this.to.getTitle());
+    }
+
+    @Override
+    public void clear() {
+        textToTranslate.setText("");
+        favorite.setChecked(false);
+        translatedText.setText("");
     }
 
     public void setTextToTranslate(String textToTranslate, String langs) {
