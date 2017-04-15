@@ -4,4 +4,7 @@ import com.arellomobile.mvp.MvpView;
 
 interface TranslationsView extends MvpView {
 
+    void showList();
+
+    void showEmptyMessage();
 }

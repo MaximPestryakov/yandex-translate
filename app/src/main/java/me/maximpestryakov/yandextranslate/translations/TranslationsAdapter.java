@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -15,6 +14,8 @@ import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
+import me.maximpestryakov.yandextranslate.model.Translation.OnTranslationClickListener;
+import me.maximpestryakov.yandextranslate.util.FavoriteView;
 
 class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, TranslationsAdapter.TranslationViewHolder> {
 
@@ -37,15 +38,10 @@ class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, Translat
         holder.bind(onTranslationClick, translation);
     }
 
-    interface OnTranslationClickListener {
-
-        void onClick(String textToTranslate, String lang);
-    }
-
     static class TranslationViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.itemFavorite)
-        CheckBox itemFavorite;
+        FavoriteView itemFavorite;
 
         @BindView(R.id.itemOriginal)
         TextView itemOriginal;
@@ -72,6 +68,7 @@ class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, Translat
                     r.executeTransaction(realm -> translation.setFavorite(itemFavorite.isChecked()));
                 }
             });
+            itemDirection.setText(translation.getLang().toUpperCase());
         }
     }
 }

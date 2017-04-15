@@ -9,7 +9,7 @@ public class DirsLangs {
     @SerializedName("dirs")
     private List<Direction> directions;
 
-    @SerializedName("langs")
+    @SerializedName("langs-ru.json")
     private List<Language> languages;
 
     public List<Direction> getDirections() {

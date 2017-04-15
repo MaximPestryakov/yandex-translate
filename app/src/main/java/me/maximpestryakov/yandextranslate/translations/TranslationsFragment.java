@@ -1,6 +1,5 @@
 package me.maximpestryakov.yandextranslate.translations;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
@@ -19,7 +18,6 @@ import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmQuery;
-import me.maximpestryakov.yandextranslate.App;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Translation;
 import me.maximpestryakov.yandextranslate.navigation.NavigationActivity;
@@ -35,8 +33,6 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
     private Unbinder unbinder;
 
     private Realm realm;
-
-    private Context context;
 
     private Boolean onlyFavorites;
 
@@ -56,13 +52,12 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
             onlyFavorites = args.getBoolean("only_favorites", false);
         }
         realm = Realm.getDefaultInstance();
-        context = App.from(getActivity());
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_favorites, container, false);
+        View view = inflater.inflate(R.layout.fragment_translations, container, false);
         unbinder = ButterKnife.bind(this, view);
 
 
@@ -74,9 +69,9 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         translations = query.findAll();
 
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        DividerItemDecoration decoration = new DividerItemDecoration(getActivity(), layoutManager.getOrientation());
         TranslationsAdapter translationsAdapter = new TranslationsAdapter(translations, this::showTranslation);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        DividerItemDecoration decoration = new DividerItemDecoration(context, layoutManager.getOrientation());
 
         translationList.setHasFixedSize(true);
         translationList.setLayoutManager(layoutManager);
@@ -96,6 +91,16 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
     public void onDestroy() {
         super.onDestroy();
         realm.close();
+    }
+
+    @Override
+    public void showList() {
+
+    }
+
+    @Override
+    public void showEmptyMessage() {
+
     }
 
     public void showTranslation(String textToTranslate, String lang) {

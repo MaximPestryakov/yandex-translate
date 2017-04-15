@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".translations.TranslationsFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/translationList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/emptyImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_above="@+id/emptyText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_history_black_24dp" />
+
+    <TextView
+        android:id="@+id/emptyText"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="gone"
+        tools:text="@string/empty_history" />
+
+</RelativeLayout>

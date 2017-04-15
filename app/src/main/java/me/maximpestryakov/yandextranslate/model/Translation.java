@@ -61,4 +61,8 @@ public class Translation extends RealmObject {
     public void setText(RealmList<RealmString> text) {
         this.text = text;
     }
+
+    public interface OnTranslationClickListener {
+        void onClick(String textToTranslate, String lang);
+    }
 }

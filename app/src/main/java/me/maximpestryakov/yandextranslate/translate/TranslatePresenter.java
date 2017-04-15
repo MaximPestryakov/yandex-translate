@@ -3,11 +3,12 @@ package me.maximpestryakov.yandextranslate.translate;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.net.UnknownHostException;
+
 import io.realm.Realm;
+import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.api.ApiManager;
 import me.maximpestryakov.yandextranslate.api.YandexTranslateApi;
-import me.maximpestryakov.yandextranslate.model.DirsLangs;
-import me.maximpestryakov.yandextranslate.model.Language;
 import me.maximpestryakov.yandextranslate.model.Translation;
 import me.maximpestryakov.yandextranslate.util.Callback;
 
@@ -18,7 +19,6 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
 
     TranslatePresenter() {
         api = ApiManager.getApi();
-        loadLangs();
         onChoseFromLang("en");
         onChoseToLang("ru");
     }
@@ -57,32 +57,11 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                 });
                 getViewState().showTranslation(newTranslation);
             }, (call, t) -> {
-
+                if (t instanceof UnknownHostException) {
+                    getViewState().showError(R.string.no_internet);
+                }
             }));
         }
-    }
-
-    void loadLangs() {
-        try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(r -> {
-                Language ru = new Language("ru", "Русский");
-                r.copyToRealmOrUpdate(ru);
-                Language en = new Language("en", "Английский");
-                r.copyToRealmOrUpdate(en);
-            });
-        }
-
-        api.getLangs("ru").enqueue(new Callback<>((call, response) -> {
-            DirsLangs dirsLangs = response.body();
-            try (Realm realm = Realm.getDefaultInstance()) {
-                realm.executeTransaction(r -> {
-                    r.copyToRealmOrUpdate(dirsLangs.getLanguages());
-                    r.copyToRealmOrUpdate(dirsLangs.getDirections());
-                });
-            }
-        }, (call, t) -> {
-            t.printStackTrace();
-        }));
     }
 
     void onChoseFromLang(String from) {

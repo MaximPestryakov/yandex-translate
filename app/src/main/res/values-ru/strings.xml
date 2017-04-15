@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Яндекс Переводчик</string>
+    <string name="lang_code">ru</string>
+    <string name="langs_json">langs-ru.json</string>
+
+    <string name="no_internet">Отсутствует интернет</string>
+    <string name="translate">Перевод</string>
+    <string name="favorites">Избранное</string>
+    <string name="history">История</string>
+    <string name="type_text">Введите текст</string>
+    <string name="empty_history">Нет переводов в истории</string>
+    <string name="empty_favorites">Нет переводов в избранном</string>
+</resources>

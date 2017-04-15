@@ -1,12 +1,9 @@
 package me.maximpestryakov.yandextranslate.api;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
-import com.google.gson.GsonBuilder;
 
-import me.maximpestryakov.yandextranslate.model.DirsLangs;
-import me.maximpestryakov.yandextranslate.util.DirsLangsDeserializer;
-import me.maximpestryakov.yandextranslate.util.RealmString;
-import me.maximpestryakov.yandextranslate.util.RealmStringDeserializer;
+import me.maximpestryakov.yandextranslate.App;
+import me.maximpestryakov.yandextranslate.BuildConfig;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -21,7 +18,7 @@ public class ApiManager {
     }
 
     public static void init() {
-        OkHttpClient client = new OkHttpClient.Builder()
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     Request originalRequest = chain.request();
                     HttpUrl originalUrl = originalRequest.url();
@@ -35,16 +32,15 @@ public class ApiManager {
                             .build();
 
                     return chain.proceed(request);
-                })
-                .addNetworkInterceptor(new StethoInterceptor())
-                .build();
+                });
+        if (BuildConfig.DEBUG) {
+            clientBuilder.addNetworkInterceptor(new StethoInterceptor());
+        }
+        OkHttpClient client = clientBuilder.build();
 
         api = new Retrofit.Builder()
                 .baseUrl(YandexTranslateApi.URL)
-                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
-                        .registerTypeAdapter(RealmString.class, new RealmStringDeserializer())
-                        .registerTypeAdapter(DirsLangs.class, new DirsLangsDeserializer())
-                        .create()))
+                .addConverterFactory(GsonConverterFactory.create(App.getGson()))
                 .client(client)
                 .build()
                 .create(YandexTranslateApi.class);

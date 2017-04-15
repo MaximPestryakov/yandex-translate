@@ -4,17 +4,17 @@
         android:id="@+id/navTranslate"
         android:enabled="true"
         android:icon="@drawable/ic_translate_black_24dp"
-        android:title="Перевод" />
+        android:title="@string/translate" />
 
     <item
         android:id="@+id/navFavorite"
         android:enabled="true"
         android:icon="@drawable/ic_bookmark_black_24dp"
-        android:title="Избранное" />
+        android:title="@string/favorites" />
 
     <item
         android:id="@+id/navHistory"
         android:enabled="true"
         android:icon="@drawable/ic_history_black_24dp"
-        android:title="История" />
+        android:title="@string/history" />
 </menu>

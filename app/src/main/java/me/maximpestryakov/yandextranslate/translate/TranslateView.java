@@ -1,5 +1,7 @@
 package me.maximpestryakov.yandextranslate.translate;
 
+import android.support.annotation.StringRes;
+
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
@@ -26,4 +28,6 @@ interface TranslateView extends MvpView {
 
     @StateStrategyType(value = AddToEndSingleTagStrategy.class, tag = TAG_UPDATE_TEXT)
     void clear();
+
+    void showError(@StringRes int resId);
 }

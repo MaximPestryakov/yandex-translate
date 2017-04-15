@@ -72,13 +72,12 @@
         android:id="@+id/textToTranslate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/doTranslate"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/appBar"
         android:background="@android:color/white"
         android:gravity="top"
-        android:hint="Введите текст"
+        android:hint="@string/type_text"
         android:inputType="textMultiLine"
         android:lines="7"
         android:paddingBottom="8dp"
@@ -86,39 +85,30 @@
         android:paddingStart="8dp"
         android:paddingTop="8dp"
         android:scrollbars="vertical"
-        tools:text="йцукенрнгирорипмнаспмрипмаваываыва" />
+        tools:text="Текст для перевода" />
 
     <TextView
         android:id="@+id/translatedText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/favorite"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textToTranslate"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
         tools:text="TextView" />
 
-    <CheckBox
+    <me.maximpestryakov.yandextranslate.util.FavoriteView
         android:id="@+id/favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/floatingActionButton"
-        android:layout_below="@+id/textToTranslate"
-        android:button="@drawable/checkbox_favorite_custom" />
+        android:layout_alignStart="@+id/clearText"
+        android:layout_below="@+id/clearText"
+        android:layout_marginTop="16dp" />
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/translatedText"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="13dp"
-        android:clickable="true"
-        android:tint="@android:color/white"
-        app:fabSize="mini"
-        app:srcCompat="@drawable/ic_bookmark_border_black_24dp" />
 
     <ImageView
         android:id="@+id/clearText"

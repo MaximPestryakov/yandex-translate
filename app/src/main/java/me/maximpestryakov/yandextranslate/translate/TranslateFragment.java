@@ -5,11 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +29,7 @@ import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.languages.LanguagesActivity;
 import me.maximpestryakov.yandextranslate.model.Language;
 import me.maximpestryakov.yandextranslate.model.Translation;
+import me.maximpestryakov.yandextranslate.util.FavoriteView;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -49,7 +50,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     TextView translatedText;
 
     @BindView(R.id.favorite)
-    CheckBox favorite;
+    FavoriteView favorite;
 
     @BindView(R.id.translateToolbar)
     Toolbar translateToolbar;
@@ -162,8 +163,10 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
                 .subscribe(text -> {
                     if (text.isEmpty()) {
                         clearText.setVisibility(View.GONE);
+                        favorite.setVisibility(View.GONE);
                     } else {
                         clearText.setVisibility(View.VISIBLE);
+                        favorite.setVisibility(View.VISIBLE);
                     }
                 });
 
@@ -231,6 +234,10 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
         textToTranslate.setText("");
         translatedText.setText("");
         favorite.setChecked(false);
+    }
+
+    @Override
+    public void showError(@StringRes int resId) {
     }
 
     public void setTextToTranslate(String textToTranslate, String langs) {
