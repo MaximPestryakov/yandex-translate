@@ -52,7 +52,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                         } else {
                             newTranslation.setId(currentId.intValue() + 1);
                         }
-                        r.copyToRealm(newTranslation);
+                        r.copyToRealmOrUpdate(newTranslation);
                     }
                 });
                 getViewState().showTranslation(newTranslation);

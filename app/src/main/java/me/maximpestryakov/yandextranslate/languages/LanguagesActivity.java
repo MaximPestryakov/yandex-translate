@@ -3,12 +3,11 @@ package me.maximpestryakov.yandextranslate.languages;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-
-import com.arellomobile.mvp.MvpAppCompatActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,15 +15,20 @@ import io.realm.Realm;
 import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.model.Language;
 
-public class LanguagesActivity extends MvpAppCompatActivity implements LanguagesView {
+public class LanguagesActivity extends AppCompatActivity {
 
     public static final String CHOSEN_LANG = "CHOSEN_LANG";
+
     private static final String EXTRA_CURRENT_LANG = "EXTRA_CURRENT_LANG";
-    @BindView(R.id.languagesToolbar)
-    Toolbar languagesToolbar;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @BindView(R.id.languageList)
     RecyclerView languageList;
+
     private Realm realm;
+
     private LanguagesAdapter translationsAdapter;
 
     public static Intent getStartIntent(Context context, String currentLang) {
@@ -43,12 +47,13 @@ public class LanguagesActivity extends MvpAppCompatActivity implements Languages
 
         String currentLang = getIntent().getStringExtra(EXTRA_CURRENT_LANG);
 
-        setSupportActionBar(languagesToolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.select_language);
+        }
 
-        setTitle("Язык текста");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        translationsAdapter = new LanguagesAdapter(realm.where(Language.class).findAll(), currentLang);
+        translationsAdapter = new LanguagesAdapter(realm.where(Language.class).findAllSorted("title"), currentLang);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         DividerItemDecoration decoration = new DividerItemDecoration(this, layoutManager.getOrientation());
 

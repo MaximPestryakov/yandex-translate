@@ -6,6 +6,11 @@ import com.arellomobile.mvp.MvpPresenter;
 @InjectViewState
 public class TranslationsPresenter extends MvpPresenter<TranslationsView> {
 
-    TranslationsPresenter() {
+    void onEmptyList() {
+        getViewState().showEmptyMessage();
+    }
+
+    void onNotEmptyList() {
+        getViewState().showList();
     }
 }

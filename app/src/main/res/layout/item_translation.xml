@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="72dp"
-    android:background="?attr/selectableItemBackground"
+    android:background="@android:color/white"
     android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
     tools:context=".translations.TranslationsAdapter">
 
     <me.maximpestryakov.yandextranslate.util.FavoriteView
@@ -16,13 +17,29 @@
         android:layout_marginStart="16dp" />
 
     <TextView
+        android:id="@+id/itemDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:maxLength="7"
+        android:textColor="@color/colorSecondaryText"
+        android:textSize="14sp"
+        tools:text="EN-RU" />
+
+    <TextView
         android:id="@+id/itemOriginal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_toEndOf="@+id/itemFavorite"
+        android:layout_toStartOf="@id/itemDirection"
+        android:ellipsize="end"
+        android:lines="1"
         android:textColor="@color/colorPrimaryText"
         android:textSize="16sp"
         tools:text="Какая-нибудь фраза" />
@@ -31,21 +48,13 @@
         android:id="@+id/itemTranslation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/itemOriginal"
         android:layout_alignStart="@+id/itemOriginal"
         android:layout_below="@id/itemOriginal"
+        android:ellipsize="end"
+        android:lines="1"
         android:textColor="@color/colorSecondaryText"
         android:textSize="14sp"
         tools:text="Any phrase" />
-
-    <TextView
-        android:id="@+id/itemDirection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp"
-        android:textColor="@color/colorSecondaryText"
-        android:textSize="14sp"
-        tools:text="EN-RU" />
 
 </RelativeLayout>

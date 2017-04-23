@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ import me.maximpestryakov.yandextranslate.util.FavoriteView;
 
 import static android.app.Activity.RESULT_OK;
 
-
 public class TranslateFragment extends MvpAppCompatFragment implements TranslateView {
 
     public static final int CHOOSE_FROM_LANG = 1;
@@ -51,9 +49,6 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     @BindView(R.id.favorite)
     FavoriteView favorite;
-
-    @BindView(R.id.translateToolbar)
-    Toolbar translateToolbar;
 
     @BindView(R.id.swapLang)
     ImageView swapLang;
@@ -117,6 +112,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
             float newToLangX = fromLangX + fromLang.getWidth() - toLang.getWidth();
 
             fromLang.animate().x(toLangX).setDuration(250).setListener(new AnimatorListenerAdapter() {
+
                 @Override
                 public void onAnimationStart(Animator animation) {
                     fromLang.setClickable(false);
@@ -131,6 +127,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
             });
 
             toLang.animate().x(newToLangX).setDuration(250).setListener(new AnimatorListenerAdapter() {
+
                 @Override
                 public void onAnimationStart(Animator animation) {
                     toLang.setClickable(false);
@@ -145,6 +142,7 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
             });
 
             swapLang.animate().rotationBy(180).setDuration(250).setListener(new AnimatorListenerAdapter() {
+
                 @Override
                 public void onAnimationStart(Animator animation) {
                     swapLang.setClickable(false);

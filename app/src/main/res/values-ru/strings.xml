@@ -11,4 +11,5 @@
     <string name="type_text">Введите текст</string>
     <string name="empty_history">Нет переводов в истории</string>
     <string name="empty_favorites">Нет переводов в избранном</string>
+    <string name="select_language">Выбор языка</string>
 </resources>

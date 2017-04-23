@@ -14,78 +14,116 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
 
-
-        <RelativeLayout
+        <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            app:contentInsetEnd="0dp"
+            app:contentInsetStart="0dp">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/translateToolbar"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary" />
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/fromLang"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_toStartOf="@+id/swapLang"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                tools:text="Англиский" />
+                <TextView
+                    android:id="@+id/fromLang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_toStartOf="@+id/swapLang"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    tools:ignore="RelativeOverlap"
+                    tools:text="Англиский" />
 
-            <ImageView
-                android:id="@+id/swapLang"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:tint="@android:color/white"
-                app:srcCompat="@drawable/ic_swap_horiz_black_24dp" />
+                <ImageView
+                    android:id="@+id/swapLang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:tint="@android:color/white"
+                    app:srcCompat="@drawable/ic_swap_horiz_black_24dp"
+                    tools:ignore="ContentDescription" />
 
-            <TextView
-                android:id="@+id/toLang"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_toEndOf="@+id/swapLang"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                tools:text="Русский" />
+                <TextView
+                    android:id="@+id/toLang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_toEndOf="@+id/swapLang"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    tools:text="Русский" />
 
-        </RelativeLayout>
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <EditText
-        android:id="@+id/textToTranslate"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/textLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/appBar"
-        android:background="@android:color/white"
-        android:gravity="top"
-        android:hint="@string/type_text"
-        android:inputType="textMultiLine"
-        android:lines="7"
-        android:paddingBottom="8dp"
-        android:paddingEnd="40dp"
-        android:paddingStart="8dp"
-        android:paddingTop="8dp"
-        android:scrollbars="vertical"
-        tools:text="Текст для перевода" />
+        android:animateLayoutChanges="true"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/clearText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_clear_black_24dp"
+            tools:ignore="ContentDescription" />
+
+        <me.maximpestryakov.yandextranslate.util.FavoriteView
+            android:id="@+id/favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/clearText"
+            android:layout_below="@+id/clearText"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/textToTranslate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/favorite"
+            android:background="@android:color/white"
+            android:gravity="top"
+            android:hint="@string/type_text"
+            android:inputType="textMultiLine"
+            android:lines="7"
+            android:paddingBottom="8dp"
+            android:paddingEnd="0dp"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:scrollbars="vertical"
+            tools:text="Текст для перевода" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/translatedText"
@@ -94,32 +132,11 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textToTranslate"
+        android:layout_below="@id/textLayout"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
         tools:text="TextView" />
-
-    <me.maximpestryakov.yandextranslate.util.FavoriteView
-        android:id="@+id/favorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/clearText"
-        android:layout_below="@+id/clearText"
-        android:layout_marginTop="16dp" />
-
-
-    <ImageView
-        android:id="@+id/clearText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/appBar"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        app:srcCompat="@drawable/ic_clear_black_24dp" />
 
 </RelativeLayout>

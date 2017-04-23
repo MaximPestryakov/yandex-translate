@@ -19,11 +19,22 @@ import me.maximpestryakov.yandextranslate.util.FavoriteView;
 
 class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, TranslationsAdapter.TranslationViewHolder> {
 
-    private OnTranslationClickListener onTranslationClick;
+    private int lastCount;
 
-    TranslationsAdapter(@Nullable OrderedRealmCollection<Translation> data, OnTranslationClickListener onTranslationClick) {
+    private OnTranslationClickListener onTranslationClickListener;
+
+    private OnItemCountChangeListener onItemCountChangeListener;
+
+
+    TranslationsAdapter(@Nullable OrderedRealmCollection<Translation> data,
+                        OnTranslationClickListener onTranslationClickListener) {
         super(data, true);
-        this.onTranslationClick = onTranslationClick;
+        if (data == null) {
+            lastCount = 0;
+        } else {
+            lastCount = data.size();
+        }
+        this.onTranslationClickListener = onTranslationClickListener;
     }
 
     @Override
@@ -35,7 +46,29 @@ class TranslationsAdapter extends RealmRecyclerViewAdapter<Translation, Translat
     @Override
     public void onBindViewHolder(TranslationViewHolder holder, int position) {
         Translation translation = getItem(position);
-        holder.bind(onTranslationClick, translation);
+        holder.bind(onTranslationClickListener, translation);
+    }
+
+    @Override
+    public int getItemCount() {
+        int itemCount = super.getItemCount();
+        if (itemCount != lastCount) {
+            lastCount = itemCount;
+            if (onItemCountChangeListener != null) {
+                onItemCountChangeListener.OnItemCountChange(itemCount);
+            }
+        }
+        return itemCount;
+    }
+
+    void setOnItemCountChangeListener(OnItemCountChangeListener onItemCountChangeListener) {
+        this.onItemCountChangeListener = onItemCountChangeListener;
+        onItemCountChangeListener.OnItemCountChange(lastCount);
+    }
+
+    interface OnItemCountChangeListener {
+
+        void OnItemCountChange(int itemCount);
     }
 
     static class TranslationViewHolder extends RecyclerView.ViewHolder {

@@ -11,4 +11,5 @@
     <string name="type_text">Type text</string>
     <string name="empty_history">No translations in History</string>
     <string name="empty_favorites">No translations in Favorites</string>
+    <string name="select_language">Select language</string>
 </resources>

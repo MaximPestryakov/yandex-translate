@@ -34,7 +34,7 @@ public class FavoriteView extends AppCompatImageView {
         setImageResource(R.drawable.ic_bookmark_border_black_24dp);
         setClickable(true);
         int[] attrs;
-        attrs = new int[]{R.attr.selectableItemBackground};
+        attrs = new int[]{R.attr.selectableItemBackgroundBorderless};
         TypedArray typedArray = context.obtainStyledAttributes(attrs);
         Drawable drawable = typedArray.getDrawable(0);
         typedArray.recycle();

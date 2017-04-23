@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -24,11 +26,19 @@ import me.maximpestryakov.yandextranslate.navigation.NavigationActivity;
 
 public class TranslationsFragment extends MvpAppCompatFragment implements TranslationsView {
 
+    private static final String ARGUMENT_ONLY_FAVORITES = "ARGUMENT_ONLY_FAVORITES";
+
     @InjectPresenter
     TranslationsPresenter translationsPresenter;
 
     @BindView(R.id.translationList)
     RecyclerView translationList;
+
+    @BindView(R.id.emptyImage)
+    ImageView emptyImage;
+
+    @BindView(R.id.emptyText)
+    TextView emptyText;
 
     private Unbinder unbinder;
 
@@ -38,7 +48,7 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
 
     public static TranslationsFragment newInstance(boolean onlyFavorites) {
         Bundle args = new Bundle();
-        args.putBoolean("only_favorites", onlyFavorites);
+        args.putBoolean(ARGUMENT_ONLY_FAVORITES, onlyFavorites);
         TranslationsFragment fragment = new TranslationsFragment();
         fragment.setArguments(args);
         return fragment;
@@ -49,7 +59,7 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            onlyFavorites = args.getBoolean("only_favorites", false);
+            onlyFavorites = args.getBoolean(ARGUMENT_ONLY_FAVORITES, false);
         }
         realm = Realm.getDefaultInstance();
     }
@@ -72,6 +82,13 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         DividerItemDecoration decoration = new DividerItemDecoration(getActivity(), layoutManager.getOrientation());
         TranslationsAdapter translationsAdapter = new TranslationsAdapter(translations, this::showTranslation);
+        translationsAdapter.setOnItemCountChangeListener(itemCount -> {
+            if (itemCount == 0) {
+                translationsPresenter.onEmptyList();
+            } else {
+                translationsPresenter.onNotEmptyList();
+            }
+        });
 
         translationList.setHasFixedSize(true);
         translationList.setLayoutManager(layoutManager);
@@ -95,12 +112,23 @@ public class TranslationsFragment extends MvpAppCompatFragment implements Transl
 
     @Override
     public void showList() {
-
+        emptyImage.setVisibility(View.GONE);
+        emptyText.setVisibility(View.GONE);
+        translationList.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showEmptyMessage() {
-
+        if (onlyFavorites) {
+            emptyImage.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+            emptyText.setText(R.string.empty_favorites);
+        } else {
+            emptyImage.setImageResource(R.drawable.ic_history_black_24dp);
+            emptyText.setText(R.string.empty_history);
+        }
+        translationList.setVisibility(View.INVISIBLE);
+        emptyImage.setVisibility(View.VISIBLE);
+        emptyText.setVisibility(View.VISIBLE);
     }
 
     public void showTranslation(String textToTranslate, String lang) {
