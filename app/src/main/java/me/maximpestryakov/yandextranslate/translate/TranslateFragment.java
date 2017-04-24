@@ -30,6 +30,7 @@ import me.maximpestryakov.yandextranslate.model.Language;
 import me.maximpestryakov.yandextranslate.model.Translation;
 import me.maximpestryakov.yandextranslate.util.ConnectivityReceiver;
 import me.maximpestryakov.yandextranslate.util.FavoriteView;
+import me.maximpestryakov.yandextranslate.util.RealmString;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -209,7 +210,12 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     public void showTranslation(Translation translation) {
         errorMessage.setVisibility(View.GONE);
         translatedText.setVisibility(View.VISIBLE);
-        translatedText.setText(translation.getText().get(0).toString());
+        StringBuilder sb = new StringBuilder();
+        for (RealmString line : translation.getText()) {
+            sb.append(line.toString());
+            sb.append('\n');
+        }
+        translatedText.setText(sb.toString());
         favorite.setOnClickListener(v -> realm.executeTransaction(realm -> {
             translation.setFavorite(favorite.isChecked());
             realm.copyToRealmOrUpdate(translation);

@@ -1,0 +1,71 @@
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appBar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/fromLang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_toStartOf="@+id/swapLang"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap"
+                tools:text="Англиский" />
+
+            <ImageView
+                android:id="@+id/swapLang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:tint="@android:color/white"
+                app:srcCompat="@drawable/ic_swap_horiz_black_24dp"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/toLang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@+id/swapLang"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                tools:text="Русский" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+</android.support.design.widget.AppBarLayout>
