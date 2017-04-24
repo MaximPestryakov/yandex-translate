@@ -3,6 +3,7 @@ package me.maximpestryakov.yandextranslate.translate;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import io.realm.Realm;
@@ -24,6 +25,7 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
     }
 
     void onTranslate(String textToTranslate, String from, String to) {
+        boolean isShown = false;
         if (textToTranslate == null || textToTranslate.isEmpty()) {
             return;
         }
@@ -35,7 +37,9 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                     .findFirst();
             if (translation != null) {
                 getViewState().showTranslation(translation);
+                isShown = true;
             }
+            final boolean finalIsShown = isShown;
             api.translate(textToTranslate, from + "-" + to, "plain").enqueue(new Callback<>((call, response) -> {
                 Translation newTranslation = response.body();
 
@@ -57,8 +61,12 @@ public class TranslatePresenter extends MvpPresenter<TranslateView> {
                 });
                 getViewState().showTranslation(newTranslation);
             }, (call, t) -> {
-                if (t instanceof UnknownHostException) {
-                    getViewState().showError(R.string.no_internet);
+                if (!finalIsShown) {
+                    if (t instanceof UnknownHostException || t instanceof SocketTimeoutException) {
+                        getViewState().showError(R.string.error_no_internet);
+                    } else {
+                        getViewState().showError(R.string.error_unknown);
+                    }
                 }
             }));
         }

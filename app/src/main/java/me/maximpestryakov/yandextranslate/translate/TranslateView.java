@@ -29,5 +29,6 @@ interface TranslateView extends MvpView {
     @StateStrategyType(value = AddToEndSingleTagStrategy.class, tag = TAG_UPDATE_TEXT)
     void clear();
 
+    @StateStrategyType(value = AddToEndSingleTagStrategy.class, tag = TAG_UPDATE_TEXT)
     void showError(@StringRes int resId);
 }

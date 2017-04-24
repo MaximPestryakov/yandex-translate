@@ -139,4 +139,18 @@
         android:layout_marginTop="16dp"
         tools:text="TextView" />
 
+    <TextView
+        android:id="@+id/errorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/colorSecondaryText"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="@string/error_no_internet"
+        tools:visibility="visible" />
+
 </RelativeLayout>

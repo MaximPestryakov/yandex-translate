@@ -2,6 +2,8 @@ package me.maximpestryakov.yandextranslate;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 
 import com.facebook.stetho.Stetho;
 import com.google.gson.Gson;
@@ -19,6 +21,7 @@ import me.maximpestryakov.yandextranslate.api.ApiManager;
 import me.maximpestryakov.yandextranslate.api.YandexTranslateApi;
 import me.maximpestryakov.yandextranslate.model.DirsLangs;
 import me.maximpestryakov.yandextranslate.util.Callback;
+import me.maximpestryakov.yandextranslate.util.ConnectivityReceiver;
 import me.maximpestryakov.yandextranslate.util.DirsLangsDeserializer;
 import me.maximpestryakov.yandextranslate.util.RealmString;
 import me.maximpestryakov.yandextranslate.util.RealmStringDeserializer;
@@ -87,5 +90,8 @@ public class App extends Application {
         }, (call, t) -> {
 
         }));
+
+        registerReceiver(new ConnectivityReceiver(),
+                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 }

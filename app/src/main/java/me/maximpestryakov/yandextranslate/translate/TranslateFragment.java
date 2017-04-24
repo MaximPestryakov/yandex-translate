@@ -28,6 +28,7 @@ import me.maximpestryakov.yandextranslate.R;
 import me.maximpestryakov.yandextranslate.languages.LanguagesActivity;
 import me.maximpestryakov.yandextranslate.model.Language;
 import me.maximpestryakov.yandextranslate.model.Translation;
+import me.maximpestryakov.yandextranslate.util.ConnectivityReceiver;
 import me.maximpestryakov.yandextranslate.util.FavoriteView;
 
 import static android.app.Activity.RESULT_OK;
@@ -62,6 +63,9 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     @BindView(R.id.clearText)
     ImageView clearText;
 
+    @BindView(R.id.errorMessage)
+    TextView errorMessage;
+
     private Unbinder unbinder;
 
     private Realm realm;
@@ -69,6 +73,8 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
     private Language from;
 
     private Language to;
+
+    private ConnectivityReceiver connectivityReceiver;
 
     public static TranslateFragment newInstance() {
         return new TranslateFragment();
@@ -201,6 +207,8 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     @Override
     public void showTranslation(Translation translation) {
+        errorMessage.setVisibility(View.GONE);
+        translatedText.setVisibility(View.VISIBLE);
         translatedText.setText(translation.getText().get(0).toString());
         favorite.setOnClickListener(v -> realm.executeTransaction(realm -> {
             translation.setFavorite(favorite.isChecked());
@@ -236,6 +244,17 @@ public class TranslateFragment extends MvpAppCompatFragment implements Translate
 
     @Override
     public void showError(@StringRes int resId) {
+        errorMessage.setText(resId);
+        errorMessage.setVisibility(View.VISIBLE);
+        translatedText.setVisibility(View.GONE);
+        ConnectivityReceiver.setOnNetworkChangeStateListener(isConnected -> {
+            if (isConnected) {
+                String s = textToTranslate.getText().toString().trim();
+                if (!s.isEmpty()) {
+                    translatePresenter.onTranslate(s, from.getCode(), to.getCode());
+                }
+            }
+        });
     }
 
     public void setTextToTranslate(String textToTranslate, String langs) {

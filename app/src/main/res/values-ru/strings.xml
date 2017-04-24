@@ -4,7 +4,8 @@
     <string name="lang_code">ru</string>
     <string name="langs_json">langs-ru.json</string>
 
-    <string name="no_internet">Отсутствует интернет</string>
+    <string name="error_no_internet">Отсутствует интернет</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
     <string name="translate">Перевод</string>
     <string name="favorites">Избранное</string>
     <string name="history">История</string>
