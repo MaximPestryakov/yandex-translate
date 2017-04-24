@@ -121,6 +121,7 @@
             android:paddingStart="8dp"
             android:paddingTop="8dp"
             android:scrollbars="vertical"
+            android:textColor="@color/colorPrimaryText"
             tools:text="Текст для перевода" />
 
     </RelativeLayout>

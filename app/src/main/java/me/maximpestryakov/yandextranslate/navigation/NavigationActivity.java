@@ -64,7 +64,7 @@ public class NavigationActivity extends MvpAppCompatActivity implements Navigati
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(FAVORITES_TAG);
         if (fragment == null) {
-            fragment = TranslationsFragment.newInstance(true);
+            fragment = TranslationsFragment.newInstance(R.string.favorites, true);
             showFragment(fragment, FAVORITES_TAG, true);
         } else {
             showFragment(fragment, FAVORITES_TAG, false);
@@ -77,7 +77,7 @@ public class NavigationActivity extends MvpAppCompatActivity implements Navigati
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(HISTORY_TAG);
         if (fragment == null) {
-            fragment = TranslationsFragment.newInstance(false);
+            fragment = TranslationsFragment.newInstance(R.string.history, false);
             showFragment(fragment, HISTORY_TAG, true);
         } else {
             showFragment(fragment, HISTORY_TAG, false);

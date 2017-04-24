@@ -16,6 +16,8 @@ public class Translation extends RealmObject {
 
     private boolean favorite;
 
+    private boolean cached = true;
+
     @SerializedName("lang")
     private String lang;
 
@@ -44,6 +46,14 @@ public class Translation extends RealmObject {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    public boolean isCached() {
+        return cached;
+    }
+
+    public void setCached(boolean cached) {
+        this.cached = cached;
     }
 
     public String getLang() {
